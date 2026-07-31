@@ -1,0 +1,14 @@
+[
+  { "wilayaCode": "16", "code": "1601", "nameAr": "الجزائر الوسطى", "nameFr": "Alger Centre", "nameEn": "Alger Centre" },
+  { "wilayaCode": "16", "code": "1602", "nameAr": "سيدي امحمد", "nameFr": "Sidi M'Hamed", "nameEn": "Sidi MHamed" },
+  { "wilayaCode": "16", "code": "1603", "nameAr": "باب الوادي", "nameFr": "Bab El Oued", "nameEn": "Bab El Oued" },
+  { "wilayaCode": "16", "code": "1604", "nameAr": "حسين داي", "nameFr": "Hussein Dey", "nameEn": "Hussein Dey" },
+  { "wilayaCode": "16", "code": "1605", "nameAr": "بئر مراد رايس", "nameFr": "Bir Mourad Rais", "nameEn": "Bir Mourad Rais" },
+  { "wilayaCode": "16", "code": "1606", "nameAr": "الدار البيضاء", "nameFr": "Dar El Beida", "nameEn": "Dar El Beida" },
+  { "wilayaCode": "16", "code": "1607", "nameAr": "بابا حسن", "nameFr": "Baba Hassen", "nameEn": "Baba Hassen" },
+  { "wilayaCode": "31", "code": "3101", "nameAr": "وهران", "nameFr": "Oran", "nameEn": "Oran" },
+  { "wilayaCode": "31", "code": "3102", "nameAr": "بئر الجير", "nameFr": "Bir El Djir", "nameEn": "Bir El Djir" },
+  { "wilayaCode": "31", "code": "3103", "nameAr": "السانيا", "nameFr": "Es Senia", "nameEn": "Es Senia" },
+  { "wilayaCode": "31", "code": "3104", "nameAr": "عين الترك", "nameFr": "Ain El Turk", "nameEn": "Ain El Turk" },
+  { "wilayaCode": "31", "code": "3105", "nameAr": "أرزيو", "nameFr": "Arzew", "nameEn": "Arzew" }
+]

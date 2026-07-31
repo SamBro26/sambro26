@@ -1,0 +1,73 @@
+/**
+ * All 58 Algerian wilayas - hand-maintained reference list.
+ * Mirrors the public.wilayas table (matched on code).
+ */
+export interface WilayaDef {
+  code: string;
+  nameAr: string;
+  nameFr: string;
+  nameEn: string;
+}
+
+export const WILAYAS: WilayaDef[] = [
+  { code: "01", nameAr: "أدرار", nameFr: "Adrar", nameEn: "Adrar" },
+  { code: "02", nameAr: "الشلف", nameFr: "Chlef", nameEn: "Chlef" },
+  { code: "03", nameAr: "الأغواط", nameFr: "Laghouat", nameEn: "Laghouat" },
+  { code: "04", nameAr: "أم البواقي", nameFr: "Oum El Bouaghi", nameEn: "Oum El Bouaghi" },
+  { code: "05", nameAr: "باتنة", nameFr: "Batna", nameEn: "Batna" },
+  { code: "06", nameAr: "بجاية", nameFr: "Béjaïa", nameEn: "Bejaia" },
+  { code: "07", nameAr: "بسكرة", nameFr: "Biskra", nameEn: "Biskra" },
+  { code: "08", nameAr: "بشار", nameFr: "Béchar", nameEn: "Bechar" },
+  { code: "09", nameAr: "البليدة", nameFr: "Blida", nameEn: "Blida" },
+  { code: "10", nameAr: "البويرة", nameFr: "Bouira", nameEn: "Bouira" },
+  { code: "11", nameAr: "تمنراست", nameFr: "Tamanrasset", nameEn: "Tamanrasset" },
+  { code: "12", nameAr: "تبسة", nameFr: "Tébessa", nameEn: "Tebessa" },
+  { code: "13", nameAr: "تلمسان", nameFr: "Tlemcen", nameEn: "Tlemcen" },
+  { code: "14", nameAr: "تيارت", nameFr: "Tiaret", nameEn: "Tiaret" },
+  { code: "15", nameAr: "تيزي وزو", nameFr: "Tizi Ouzou", nameEn: "Tizi Ouzou" },
+  { code: "16", nameAr: "الجزائر", nameFr: "Alger", nameEn: "Algiers" },
+  { code: "17", nameAr: "الجلفة", nameFr: "Djelfa", nameEn: "Djelfa" },
+  { code: "18", nameAr: "جيجل", nameFr: "Jijel", nameEn: "Jijel" },
+  { code: "19", nameAr: "سطيف", nameFr: "Sétif", nameEn: "Setif" },
+  { code: "20", nameAr: "سعيدة", nameFr: "Saïda", nameEn: "Saida" },
+  { code: "21", nameAr: "سكيكدة", nameFr: "Skikda", nameEn: "Skikda" },
+  { code: "22", nameAr: "سيدي بلعباس", nameFr: "Sidi Bel Abbès", nameEn: "Sidi Bel Abbes" },
+  { code: "23", nameAr: "عنابة", nameFr: "Annaba", nameEn: "Annaba" },
+  { code: "24", nameAr: "قالمة", nameFr: "Guelma", nameEn: "Guelma" },
+  { code: "25", nameAr: "قسنطينة", nameFr: "Constantine", nameEn: "Constantine" },
+  { code: "26", nameAr: "المدية", nameFr: "Médéa", nameEn: "Medea" },
+  { code: "27", nameAr: "مستغانم", nameFr: "Mostaganem", nameEn: "Mostaganem" },
+  { code: "28", nameAr: "المسيلة", nameFr: "MSila", nameEn: "MSila" },
+  { code: "29", nameAr: "معسكر", nameFr: "Mascara", nameEn: "Mascara" },
+  { code: "30", nameAr: "ورقلة", nameFr: "Ouargla", nameEn: "Ouargla" },
+  { code: "31", nameAr: "وهران", nameFr: "Oran", nameEn: "Oran" },
+  { code: "32", nameAr: "البيض", nameFr: "El Bayadh", nameEn: "El Bayadh" },
+  { code: "33", nameAr: "إليزي", nameFr: "Illizi", nameEn: "Illizi" },
+  { code: "34", nameAr: "برج بوعريريج", nameFr: "Bordj Bou Arréridj", nameEn: "Bordj Bou Arreridj" },
+  { code: "35", nameAr: "بومرداس", nameFr: "Boumerdès", nameEn: "Boumerdes" },
+  { code: "36", nameAr: "الطارف", nameFr: "El Tarf", nameEn: "El Tarf" },
+  { code: "37", nameAr: "تندوف", nameFr: "Tindouf", nameEn: "Tindouf" },
+  { code: "38", nameAr: "تيسمسيلت", nameFr: "Tissemsilt", nameEn: "Tissemsilt" },
+  { code: "39", nameAr: "الوادي", nameFr: "El Oued", nameEn: "El Oued" },
+  { code: "40", nameAr: "خنشلة", nameFr: "Khenchela", nameEn: "Khenchela" },
+  { code: "41", nameAr: "سوق أهراس", nameFr: "Souk Ahras", nameEn: "Souk Ahras" },
+  { code: "42", nameAr: "تيبازة", nameFr: "Tipaza", nameEn: "Tipaza" },
+  { code: "43", nameAr: "ميلة", nameFr: "Mila", nameEn: "Mila" },
+  { code: "44", nameAr: "عين الدفلى", nameFr: "Aïn Defla", nameEn: "Ain Defla" },
+  { code: "45", nameAr: "النعامة", nameFr: "Naâma", nameEn: "Naama" },
+  { code: "46", nameAr: "عين تموشنت", nameFr: "Aïn Témouchent", nameEn: "Ain Temouchent" },
+  { code: "47", nameAr: "غرداية", nameFr: "Ghardaïa", nameEn: "Ghardaia" },
+  { code: "48", nameAr: "غليزان", nameFr: "Relizane", nameEn: "Relizane" },
+  { code: "49", nameAr: "تيميمون", nameFr: "Timimoun", nameEn: "Timimoun" },
+  { code: "50", nameAr: "برج باجي مختار", nameFr: "Bordj Badji Mokhtar", nameEn: "Bordj Badji Mokhtar" },
+  { code: "51", nameAr: "أولاد جلال", nameFr: "Ouled Djellal", nameEn: "Ouled Djellal" },
+  { code: "52", nameAr: "بني عباس", nameFr: "Béni Abbès", nameEn: "Beni Abbes" },
+  { code: "53", nameAr: "عين صالح", nameFr: "In Salah", nameEn: "In Salah" },
+  { code: "54", nameAr: "عين قزام", nameFr: "In Guezzam", nameEn: "In Guezzam" },
+  { code: "55", nameAr: "تقرت", nameFr: "Touggourt", nameEn: "Touggourt" },
+  { code: "56", nameAr: "جانت", nameFr: "Djanet", nameEn: "Djanet" },
+  { code: "57", nameAr: "المغير", nameFr: "El MGhair", nameEn: "El MGhair" },
+  { code: "58", nameAr: "المنيعة", nameFr: "El Meniaa", nameEn: "El Meniaa" },
+];
+
+export const getWilaya = (code: string) => WILAYAS.find((w) => w.code === code);
