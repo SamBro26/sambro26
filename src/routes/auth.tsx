@@ -68,7 +68,10 @@ function AuthPage() {
       password: inPassword,
     });
     setBusy(false);
-    if (error) return toast.error(error.message);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
     toast.success("مرحبا بك / Bienvenue");
     void navigate({ to: "/" });
   }
@@ -81,7 +84,10 @@ function AuthPage() {
       phone: upPhone,
       password: upPassword,
     });
-    if (!parsed.success) return toast.error(parsed.error.issues[0].message);
+    if (!parsed.success) {
+      toast.error(parsed.error.issues[0].message);
+      return;
+    }
 
     setBusy(true);
     const { error } = await supabase.auth.signUp({
@@ -93,7 +99,10 @@ function AuthPage() {
       },
     });
     setBusy(false);
-    if (error) return toast.error(error.message);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
     toast.success("تحقق من بريدك الإلكتروني لتأكيد الحساب / Vérifiez votre e-mail");
   }
 
