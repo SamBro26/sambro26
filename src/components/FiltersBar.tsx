@@ -127,6 +127,11 @@ export function FiltersBar({
           </SelectTrigger>
           <SelectContent className="max-h-72">
             <SelectItem value={ALL}>{t("baladiya")} — {t("all")}</SelectItem>
+            {baladiyas.data?.length === 0 && (
+              <div className="px-3 py-2 text-xs text-muted-foreground">
+                {lang === "ar" ? "لا توجد بلديات لهذه الولاية" : "Aucune commune disponible"}
+              </div>
+            )}
             {(baladiyas.data ?? []).map((b) => (
               <SelectItem key={b.id} value={String(b.id)}>
                 {pickName(
