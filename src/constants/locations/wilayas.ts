@@ -1,5 +1,5 @@
 /**
- * All 58 Algerian wilayas - hand-maintained reference list.
+ * All 69 Algerian wilayas (2025 administrative division) - hand-maintained.
  * Mirrors the public.wilayas table (matched on code).
  */
 export interface WilayaDef {
@@ -68,6 +68,17 @@ export const WILAYAS: WilayaDef[] = [
   { code: "56", nameAr: "جانت", nameFr: "Djanet", nameEn: "Djanet" },
   { code: "57", nameAr: "المغير", nameFr: "El MGhair", nameEn: "El MGhair" },
   { code: "58", nameAr: "المنيعة", nameFr: "El Meniaa", nameEn: "El Meniaa" },
+  { code: "59", nameAr: "أفلو", nameFr: "Aflou", nameEn: "Aflou" },
+  { code: "60", nameAr: "الأبيض سيدي الشيخ", nameFr: "El Abiodh Sidi Cheikh", nameEn: "El Abiodh Sidi Cheikh" },
+  { code: "61", nameAr: "العريشة", nameFr: "El Aricha", nameEn: "El Aricha" },
+  { code: "62", nameAr: "القنطرة", nameFr: "El Kantara", nameEn: "El Kantara" },
+  { code: "63", nameAr: "بريكة", nameFr: "Barika", nameEn: "Barika" },
+  { code: "64", nameAr: "بوسعادة", nameFr: "Bou Saada", nameEn: "Bou Saada" },
+  { code: "65", nameAr: "بئر العاتر", nameFr: "Bir El Ater", nameEn: "Bir El Ater" },
+  { code: "66", nameAr: "قصر البخاري", nameFr: "Ksar El Boukhari", nameEn: "Ksar El Boukhari" },
+  { code: "67", nameAr: "قصر الشلالة", nameFr: "Ksar Chellala", nameEn: "Ksar Chellala" },
+  { code: "68", nameAr: "عين وسارة", nameFr: "Ain Oussara", nameEn: "Ain Oussara" },
+  { code: "69", nameAr: "مسعد", nameFr: "Messaad", nameEn: "Messaad" },
 ];
 
 export const getWilaya = (code: string) => WILAYAS.find((w) => w.code === code);
