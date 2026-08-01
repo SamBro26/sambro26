@@ -98,10 +98,14 @@ function PostAd() {
   );
 
   const titles = STEP_TITLES[lang === "ar" ? "ar" : "fr"];
+  // Baladiya is required only when the selected wilaya actually has communes,
+  // so partial reference data never blocks the wizard.
+  const baladiyaOptions = baladiyas.data ?? [];
+  const baladiyaRequired = baladiyas.isSuccess && baladiyaOptions.length > 0;
   const canNext =
     (step === 0 && !!adKind) ||
     (step === 1 && propertyTypeId != null && transactionTypeId != null) ||
-    (step === 2 && wilayaId != null && baladiyaId != null) ||
+    (step === 2 && wilayaId != null && (!baladiyaRequired || baladiyaId != null)) ||
     step === 3;
 
   async function submit() {
@@ -294,15 +298,17 @@ function PostAd() {
                     disabled={wilayaId == null}
                   >
                     <SelectTrigger>
-                      <SelectValue placeholder={t("baladiya")} />
+                      <SelectValue
+                        placeholder={lang === "ar" ? "اختر البلدية" : "Sélectionner la baladiya"}
+                      />
                     </SelectTrigger>
                     <SelectContent className="max-h-72">
-                      {baladiyas.data?.length === 0 && (
+                      {baladiyas.isSuccess && baladiyaOptions.length === 0 && (
                         <div className="px-3 py-2 text-xs text-muted-foreground">
                           {lang === "ar" ? "لا توجد بلديات لهذه الولاية" : "Aucune commune disponible"}
                         </div>
                       )}
-                      {(baladiyas.data ?? []).map((b) => (
+                      {baladiyaOptions.map((b) => (
                         <SelectItem key={b.id} value={String(b.id)}>
                           {pickName(
                             {
