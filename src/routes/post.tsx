@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowLeft, ArrowRight, Check } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -14,7 +14,13 @@ import {
   listTransactionTypes,
   listWilayas,
 } from "@/lib/findmedz";
-import { pickName, pickTypeLabel, transactionTypesForAdKind, type AdKind } from "@/constants";
+import {
+  chefLieuFallback,
+  pickName,
+  pickTypeLabel,
+  transactionTypesForAdKind,
+  type AdKind,
+} from "@/constants";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -98,10 +104,21 @@ function PostAd() {
   );
 
   const titles = STEP_TITLES[lang === "ar" ? "ar" : "fr"];
-  // Baladiya is required only when the selected wilaya actually has communes,
-  // so partial reference data never blocks the wizard.
   const baladiyaOptions = baladiyas.data ?? [];
-  const baladiyaRequired = baladiyas.isSuccess && baladiyaOptions.length > 0;
+  const selectedWilaya = (wilayas.data ?? []).find((w) => w.id === wilayaId);
+  // Placeholder label for wilayas whose commune list is not seeded yet.
+  const chefLieu = selectedWilaya ? chefLieuFallback(selectedWilaya.code) : null;
+
+  // Auto-select the first commune so the wizard is never blocked by a blank field.
+  useEffect(() => {
+    if (baladiyaId == null && baladiyaOptions.length > 0) {
+      setBaladiyaId(baladiyaOptions[0].id);
+    }
+  }, [baladiyaId, baladiyaOptions]);
+
+  // Baladiya only gates the step when the wilaya actually has communes loaded,
+  // so partial reference data never blocks the wizard for any of the 69 wilayas.
+  const baladiyaRequired = baladiyaOptions.length > 0;
   const canNext =
     (step === 0 && !!adKind) ||
     (step === 1 && propertyTypeId != null && transactionTypeId != null) ||
@@ -305,7 +322,18 @@ function PostAd() {
                     <SelectContent className="max-h-72">
                       {baladiyas.isSuccess && baladiyaOptions.length === 0 && (
                         <div className="px-3 py-2 text-xs text-muted-foreground">
-                          {lang === "ar" ? "لا توجد بلديات لهذه الولاية" : "Aucune commune disponible"}
+                          {chefLieu
+                            ? pickName(
+                                {
+                                  nameAr: chefLieu.nameAr,
+                                  nameFr: chefLieu.nameFr,
+                                  nameEn: chefLieu.nameEn,
+                                },
+                                lang,
+                              )
+                            : lang === "ar"
+                              ? "لا توجد بلديات لهذه الولاية"
+                              : "Aucune commune disponible"}
                         </div>
                       )}
                       {baladiyaOptions.map((b) => (
