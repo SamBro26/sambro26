@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ArrowLeft, ArrowRight, Check } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -104,7 +104,7 @@ function PostAd() {
   );
 
   const titles = STEP_TITLES[lang === "ar" ? "ar" : "fr"];
-  const baladiyaOptions = baladiyas.data ?? [];
+  const baladiyaOptions = useMemo(() => baladiyas.data ?? [], [baladiyas.data]);
   const selectedWilaya = (wilayas.data ?? []).find((w) => w.id === wilayaId);
   // Placeholder label for wilayas whose commune list is not seeded yet.
   const chefLieu = selectedWilaya ? chefLieuFallback(selectedWilaya.code) : null;
