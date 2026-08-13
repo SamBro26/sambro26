@@ -89,8 +89,13 @@ export function baladiyaLabel(b: BaladiyaRecord, lang: Lang): string {
   return lang === "ar" ? b.nameAr : lang === "fr" ? b.nameFr : b.nameEn;
 }
 
-export const getBaladiya = (code: string): BaladiyaDef | undefined =>
-  allBaladiyas().find((b) => b.code === code);
+let byCodeIndex: Map<string, BaladiyaDef> | null = null;
 
-/** Legacy flat export kept for backwards compatibility. */
-export const BALADIYAS: BaladiyaDef[] = allBaladiyas();
+export const getBaladiya = (code: string): BaladiyaDef | undefined => {
+  // Built lazily (and cached) so importing this module never walks 1500+ rows.
+  byCodeIndex ??= new Map(allBaladiyas().map((b) => [b.code, b]));
+  return byCodeIndex.get(code);
+};
+
+/** Legacy flat accessor kept for backwards compatibility. */
+export const getAllBaladiyas = (): BaladiyaDef[] => allBaladiyas();
