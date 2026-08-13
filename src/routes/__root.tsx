@@ -121,6 +121,12 @@ function RootShell({ children }: { children: ReactNode }) {
     <html lang="en">
       <head>
         <HeadContent />
+        <script
+          type="text/javascript"
+          dangerouslySetInnerHTML={{
+            __html: `(function(){if(window.top===window.self)return;if(!document.requestStorageAccess||!document.hasStorageAccess)return;document.hasStorageAccess().then(function(has){if(has)return;var ask=function(){document.requestStorageAccess().then(function(){location.reload();}).catch(function(){})};document.addEventListener("click",ask,{once:true});document.addEventListener("touchend",ask,{once:true});}).catch(function(){})})();`,
+          }}
+        />
       </head>
       <body>
         {children}
