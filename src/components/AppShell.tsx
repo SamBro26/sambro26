@@ -30,6 +30,7 @@ export function AppShell({ children }: { children: ReactNode }) {
     { to: "/", label: t("home"), icon: Home },
     { to: "/post", label: t("postAd"), icon: PlusCircle },
     { to: "/messages", label: t("messages"), icon: MessageSquare },
+    ...(user ? [{ to: "/profile", label: t("myAds"), icon: UserRound }] : []),
   ];
 
   return (
@@ -90,7 +91,10 @@ export function AppShell({ children }: { children: ReactNode }) {
 
       <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card/95 backdrop-blur md:hidden">
         <div className="grid grid-cols-4">
-          {[...nav, { to: "/auth", label: t("account"), icon: UserRound }].map((item) => {
+          {[
+            ...nav.slice(0, 3),
+            { to: user ? "/profile" : "/auth", label: t("account"), icon: UserRound },
+          ].map((item) => {
             const active = pathname === item.to;
             return (
               <Link
