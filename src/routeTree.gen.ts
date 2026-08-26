@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as MessagesRouteImport } from './routes/messages'
 import { Route as PostRouteImport } from './routes/post'
+import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as AdsAdIdRouteImport } from './routes/ads.$adId'
 
 const IndexRoute = IndexRouteImport.update({
@@ -35,6 +36,11 @@ const PostRoute = PostRouteImport.update({
   path: '/post',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdsAdIdRoute = AdsAdIdRouteImport.update({
   id: '/ads/$adId',
   path: '/ads/$adId',
@@ -46,6 +52,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/messages': typeof MessagesRoute
   '/post': typeof PostRoute
+  '/profile': typeof ProfileRoute
   '/ads/$adId': typeof AdsAdIdRoute
 }
 export interface FileRoutesByTo {
@@ -53,6 +60,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/messages': typeof MessagesRoute
   '/post': typeof PostRoute
+  '/profile': typeof ProfileRoute
   '/ads/$adId': typeof AdsAdIdRoute
 }
 export interface FileRoutesById {
@@ -61,14 +69,22 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/messages': typeof MessagesRoute
   '/post': typeof PostRoute
+  '/profile': typeof ProfileRoute
   '/ads/$adId': typeof AdsAdIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/messages' | '/post' | '/ads/$adId'
+  fullPaths: '/' | '/auth' | '/messages' | '/post' | '/profile' | '/ads/$adId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/messages' | '/post' | '/ads/$adId'
-  id: '__root__' | '/' | '/auth' | '/messages' | '/post' | '/ads/$adId'
+  to: '/' | '/auth' | '/messages' | '/post' | '/profile' | '/ads/$adId'
+  id:
+    | '__root__'
+    | '/'
+    | '/auth'
+    | '/messages'
+    | '/post'
+    | '/profile'
+    | '/ads/$adId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -76,6 +92,7 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   MessagesRoute: typeof MessagesRoute
   PostRoute: typeof PostRoute
+  ProfileRoute: typeof ProfileRoute
   AdsAdIdRoute: typeof AdsAdIdRoute
 }
 
@@ -109,6 +126,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PostRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/ads/$adId': {
       id: '/ads/$adId'
       path: '/ads/$adId'
@@ -124,6 +148,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   MessagesRoute: MessagesRoute,
   PostRoute: PostRoute,
+  ProfileRoute: ProfileRoute,
   AdsAdIdRoute: AdsAdIdRoute,
 }
 export const routeTree = rootRouteImport
