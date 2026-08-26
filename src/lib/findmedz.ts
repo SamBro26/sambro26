@@ -46,9 +46,60 @@ export async function listAds(filters: AdFilters) {
 }
 
 export async function getAd(id: string) {
-  const { data, error } = await supabase.from("ads").select(AD_SELECT).eq("id", id).maybeSingle();
+  const { data, error } = await supabase
+    .from("ads")
+    .select(AD_SELECT)
+    .eq("id", id)
+    .eq("is_deleted", false)
+    .maybeSingle();
   if (error) throw error;
   return data;
+}
+
+/** Ads owned by the signed-in user (any status), excluding soft-deleted ones. */
+export async function listMyAds(userId: string) {
+  const { data, error } = await supabase
+    .from("ads")
+    .select(AD_SELECT)
+    .eq("user_id", userId)
+    .eq("is_deleted", false)
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return data ?? [];
+}
+
+export interface UpdateAdInput {
+  propertyTypeId: number;
+  transactionTypeId: number;
+  wilayaId: number;
+  baladiyaId: number;
+  exactAddress?: string;
+  price?: number | null;
+  advancePayment?: number | null;
+  description?: string;
+}
+
+export async function updateAd(adId: string, input: UpdateAdInput) {
+  const { error } = await supabase
+    .from("ads")
+    .update({
+      property_type_id: input.propertyTypeId,
+      transaction_type_id: input.transactionTypeId,
+      wilaya_id: input.wilayaId,
+      baladiya_id: input.baladiyaId,
+      exact_address: input.exactAddress || null,
+      price: input.price ?? null,
+      advance_payment: input.advancePayment ?? null,
+      description: input.description || null,
+    })
+    .eq("id", adId);
+  if (error) throw error;
+}
+
+/** Soft delete: the row stays in the database but disappears from every query. */
+export async function softDeleteAd(adId: string) {
+  const { error } = await supabase.from("ads").update({ is_deleted: true }).eq("id", adId);
+  if (error) throw error;
 }
 
 export async function listWilayas() {
