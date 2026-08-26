@@ -69,7 +69,7 @@ export const Route = createFileRoute("/profile")({
       { name: "twitter:card", content: "summary" },
     ],
   }),
-  component: ProfilePage;
+  component: ProfilePage,
 });
 
 type Lang = "ar" | "fr" | "en";
