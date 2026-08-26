@@ -164,6 +164,7 @@ export type Database = {
           expires_at: string | null
           featured_until: string | null
           id: string
+          is_deleted: boolean
           is_featured: boolean
           price: number | null
           property_type_id: number
@@ -184,6 +185,7 @@ export type Database = {
           expires_at?: string | null
           featured_until?: string | null
           id?: string
+          is_deleted?: boolean
           is_featured?: boolean
           price?: number | null
           property_type_id: number
@@ -204,6 +206,7 @@ export type Database = {
           expires_at?: string | null
           featured_until?: string | null
           id?: string
+          is_deleted?: boolean
           is_featured?: boolean
           price?: number | null
           property_type_id?: number
