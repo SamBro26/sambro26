@@ -29,6 +29,7 @@ export async function listAds(filters: AdFilters) {
     .select(AD_SELECT)
     .eq("ad_kind", filters.adKind)
     .eq("status", "ACTIVE")
+    .eq("is_deleted", false)
     .order("is_featured", { ascending: false })
     .order("created_at", { ascending: false })
     .limit(60);
