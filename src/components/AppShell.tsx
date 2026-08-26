@@ -30,6 +30,7 @@ export function AppShell({ children }: { children: ReactNode }) {
     { to: "/", label: t("home"), icon: Home },
     { to: "/post", label: t("postAd"), icon: PlusCircle },
     { to: "/messages", label: t("messages"), icon: MessageSquare },
+    ...(user ? [{ to: "/profile", label: t("myAds"), icon: UserRound }] : []),
   ];
 
   return (
