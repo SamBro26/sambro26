@@ -1,7 +1,9 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { Home, MessageSquare, PlusCircle, UserRound, Languages } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { Home, MessageSquare, PlusCircle, UserRound, Languages, ShieldCheck } from "lucide-react";
 import type { ReactNode } from "react";
 import { useAuth } from "@/hooks/useAuth";
+import { checkIsAdmin } from "@/lib/admin";
 import { useLang } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
