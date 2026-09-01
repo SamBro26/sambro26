@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { AppShell } from "@/components/AppShell";
 import { useAuth } from "@/hooks/useAuth";
 import { useLang } from "@/lib/i18n";
-import { pickName, pickTypeLabel } from "@/constants";
+import { pickName, pickTypeLabel, type Lang } from "@/constants";
 import { formatDzd } from "@/lib/findmedz";
 import {
   checkIsAdmin,
@@ -63,6 +63,28 @@ export const Route = createFileRoute("/admin")({
   }),
   component: AdminPage,
 });
+
+function typeLabel(
+  row: { label_ar: string; label_fr: string; label_en: string | null } | null,
+  lang: Lang,
+) {
+  if (!row) return "—";
+  return pickTypeLabel(
+    { labelAr: row.label_ar, labelFr: row.label_fr, labelEn: row.label_en ?? row.label_fr },
+    lang,
+  );
+}
+
+function placeName(
+  row: { name_ar: string; name_fr: string; name_en: string | null } | null,
+  lang: Lang,
+) {
+  if (!row) return "";
+  return pickName(
+    { nameAr: row.name_ar, nameFr: row.name_fr, nameEn: row.name_en ?? row.name_fr },
+    lang,
+  );
+}
 
 const L = {
   ar: {
@@ -241,7 +263,7 @@ function AdminPage() {
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="font-semibold">
-                      {ad.property_type ? pickTypeLabel(ad.property_type, lang) : "—"}
+                      {typeLabel(ad.property_type, lang)}
                     </span>
                     <Badge variant="secondary">{ad.status}</Badge>
                     {ad.is_deleted && <Badge variant="destructive">{tx.hidden}</Badge>}
@@ -250,8 +272,8 @@ function AdminPage() {
                     {ad.description || "—"}
                   </p>
                   <p className="mt-1 text-xs text-muted-foreground">
-                    {ad.wilaya ? pickName(ad.wilaya, lang) : ""}
-                    {ad.baladiya ? ` · ${pickName(ad.baladiya, lang)}` : ""}
+                    {placeName(ad.wilaya, lang)}
+                    {ad.baladiya ? ` · ${placeName(ad.baladiya, lang)}` : ""}
                     {ad.price ? ` · ${formatDzd(ad.price, lang === "ar" ? "دج" : "DA")}` : ""}
                     {ad.owner?.full_name ? ` · ${ad.owner.full_name}` : ""}
                   </p>
