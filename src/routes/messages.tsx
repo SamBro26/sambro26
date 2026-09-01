@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
+import { NotificationsPanel } from "@/components/NotificationsPanel";
 
 const searchSchema = z.object({ c: z.string().uuid().optional() });
 
