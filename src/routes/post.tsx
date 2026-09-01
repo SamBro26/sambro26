@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect, useMemo, useState } from "react";
-import { ArrowLeft, ArrowRight, Check } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { ArrowLeft, ArrowRight, Check, ImagePlus, X } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
 import { AppShell } from "@/components/AppShell";
@@ -35,6 +35,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
+import { MAX_IMAGES, uploadAdImages, validateImageFile } from "@/lib/images";
 
 export const Route = createFileRoute("/post")({
   head: () => ({
@@ -85,6 +86,40 @@ function PostAd() {
   const [description, setDescription] = useState("");
   const [keywords, setKeywords] = useState("");
   const [busy, setBusy] = useState(false);
+  const [images, setImages] = useState<{ id: string; file: File; preview: string }[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  function addFiles(list: FileList | null) {
+    if (!list) return;
+    const next: { id: string; file: File; preview: string }[] = [];
+    for (const file of Array.from(list)) {
+      if (images.length + next.length >= MAX_IMAGES) {
+        toast.error(
+          lang === "ar" ? `الحد الأقصى ${MAX_IMAGES} صور` : `Maximum ${MAX_IMAGES} photos`,
+        );
+        break;
+      }
+      const problem = validateImageFile(file);
+      if (problem === "type") {
+        toast.error(lang === "ar" ? "صيغة غير مدعومة" : "Format non supporté");
+        continue;
+      }
+      if (problem === "size") {
+        toast.error(lang === "ar" ? "حجم الصورة يتجاوز 5 ميغا" : "Image supérieure à 5 Mo");
+        continue;
+      }
+      next.push({ id: crypto.randomUUID(), file, preview: URL.createObjectURL(file) });
+    }
+    if (next.length) setImages((prev) => [...prev, ...next]);
+  }
+
+  function removeImage(id: string) {
+    setImages((prev) => {
+      const target = prev.find((i) => i.id === id);
+      if (target) URL.revokeObjectURL(target.preview);
+      return prev.filter((i) => i.id !== id);
+    });
+  }
 
   const wilayas = useQuery({ queryKey: ["wilayas"], queryFn: listWilayas });
   const baladiyas = useQuery({
@@ -160,6 +195,19 @@ function PostAd() {
         },
         user.id,
       );
+      if (images.length) {
+        try {
+          await uploadAdImages(
+            id,
+            user.id,
+            images.map((i) => i.file),
+          );
+        } catch {
+          toast.error(
+            lang === "ar" ? "تعذر رفع بعض الصور" : "Certaines photos n'ont pas pu être envoyées",
+          );
+        }
+      }
       toast.success(lang === "ar" ? "تم نشر الإعلان" : "Annonce publiée");
       void navigate({ to: "/ads/$adId", params: { adId: id } });
     } catch (error) {
