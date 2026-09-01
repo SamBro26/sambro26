@@ -114,6 +114,9 @@ function MessagesPage() {
     <AppShell>
       <h1 className="pb-4 font-display text-2xl font-black">{t("messages")}</h1>
 
+      <NotificationsPanel />
+
+
       <div className="grid gap-4 md:grid-cols-[minmax(0,320px)_minmax(0,1fr)]">
         <Card className={cn("overflow-hidden p-0 shadow-card", activeId && "hidden md:block")}>
           {conversations.isLoading ? (
