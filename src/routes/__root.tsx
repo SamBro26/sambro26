@@ -127,6 +127,12 @@ function RootShell({ children }: { children: ReactNode }) {
             __html: `(function(){if(window.top===window.self)return;if(!document.requestStorageAccess||!document.hasStorageAccess)return;document.hasStorageAccess().then(function(has){if(has)return;var ask=function(){document.requestStorageAccess().then(function(){location.reload();}).catch(function(){})};document.addEventListener("click",ask,{once:true});document.addEventListener("touchend",ask,{once:true});}).catch(function(){})})();`,
           }}
         />
+        <script
+          type="text/javascript"
+          dangerouslySetInnerHTML={{
+            __html: `(function(){function isCapacitor(){return typeof window!=='undefined'&&(!!window.Capacitor||!!window.Capacitor||!!window.NativeBridge||/Capacitor|wv|WebView|Android.*AppleWebKit|iPhone.*AppleWebKit.*CriOS/i.test(navigator.userAgent));}if(!isCapacitor())return;var css='[data-lovable-badge],.lovable-badge,.lovable-preview-badge,.lovable-floating-badge,iframe[src*="lovable"],a[href*="lovable.dev"][target*="_blank"],a[href*="gptengineer.app"]{display:none!important;visibility:hidden!important;opacity:0!important;pointer-events:none!important;height:0!important;width:0!important;z-index:-9999!important;}';var s=document.createElement('style');s.textContent=css;(document.head||document.documentElement).appendChild(s);document.documentElement.classList.add('in-capacitor');function hideBadge(){var selectors='[data-lovable-badge],.lovable-badge,.lovable-preview-badge,.lovable-floating-badge,a[href*="lovable.dev"],a[href*="gptengineer.app"]';document.querySelectorAll(selectors).forEach(function(el){el.remove();});}hideBadge();var mo=window.MutationObserver?new MutationObserver(hideBadge):null;if(mo)mo.observe(document.body||document.documentElement,{childList:true,subtree:true});setTimeout(hideBadge,500);setTimeout(hideBadge,1500);})();`,
+          }}
+        />
       </head>
       <body>
         {children}
