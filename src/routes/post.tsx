@@ -410,6 +410,63 @@ function PostAd() {
                     onChange={(e) => setKeywords(e.target.value)}
                   />
                 </div>
+
+                <div className="space-y-2">
+                  <Label>{lang === "ar" ? "إضافة صور" : "Ajouter des photos"}</Label>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    multiple
+                    className="hidden"
+                    onChange={(e) => {
+                      addFiles(e.target.files);
+                      e.target.value = "";
+                    }}
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-full gap-2"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={images.length >= MAX_IMAGES}
+                  >
+                    <ImagePlus className="h-4 w-4" />
+                    {lang === "ar"
+                      ? `اختر الصور (${images.length}/${MAX_IMAGES})`
+                      : `Choisir des photos (${images.length}/${MAX_IMAGES})`}
+                  </Button>
+                  <p className="text-xs text-muted-foreground">
+                    {lang === "ar"
+                      ? "JPEG أو PNG أو WEBP — 5 ميغابايت كحد أقصى لكل صورة"
+                      : "JPEG, PNG ou WEBP — 5 Mo max par image"}
+                  </p>
+                  {images.length > 0 && (
+                    <div className="flex gap-3 overflow-x-auto pb-2">
+                      {images.map((img) => (
+                        <div
+                          key={img.id}
+                          className="relative h-24 w-24 shrink-0 overflow-hidden rounded-xl border"
+                        >
+                          <img
+                            src={img.preview}
+                            alt={lang === "ar" ? "صورة الإعلان" : "Photo de l'annonce"}
+                            className="h-full w-full object-cover"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => removeImage(img.id)}
+                            aria-label={lang === "ar" ? "حذف الصورة" : "Supprimer la photo"}
+                            className="absolute end-1 top-1 rounded-full bg-background/90 p-1 text-destructive shadow"
+                          >
+                            <X className="h-3.5 w-3.5" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
               </>
             )}
 
