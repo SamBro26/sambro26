@@ -24,15 +24,31 @@ function LangToggle() {
 }
 
 export function AppShell({ children }: { children: ReactNode }) {
-  const { t, dir } = useLang();
+  const { t, dir, lang } = useLang();
   const { user, signOut } = useAuth();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+
+  const admin = useQuery({
+    queryKey: ["is-admin", user?.id],
+    queryFn: () => checkIsAdmin(user!.id),
+    enabled: !!user,
+    staleTime: 5 * 60 * 1000,
+  });
 
   const nav = [
     { to: "/", label: t("home"), icon: Home },
     { to: "/post", label: t("postAd"), icon: PlusCircle },
     { to: "/messages", label: t("messages"), icon: MessageSquare },
     ...(user ? [{ to: "/profile", label: t("myAds"), icon: UserRound }] : []),
+    ...(admin.data
+      ? [
+          {
+            to: "/admin",
+            label: lang === "ar" ? "لوحة التحكم" : "Admin",
+            icon: ShieldCheck,
+          },
+        ]
+      : []),
   ];
 
   return (
