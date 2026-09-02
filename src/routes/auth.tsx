@@ -12,6 +12,14 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Loader2, MailCheck } from "lucide-react";
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -186,6 +194,19 @@ function AuthPage() {
                     onChange={(e) => setInPassword(e.target.value)}
                     required
                   />
+                  <div className="flex justify-end pt-1">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setForgotEmail(inEmail);
+                        setForgotSent(false);
+                        setForgotOpen(true);
+                      }}
+                      className="text-xs text-primary underline-offset-4 hover:underline"
+                    >
+                      {lang === "ar" ? "نسيت كلمة السر؟" : "Mot de passe oublié ?"}
+                    </button>
+                  </div>
                 </div>
                 <Button type="submit" className="w-full" disabled={busy}>
                   {t("signIn")}
