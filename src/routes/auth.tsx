@@ -282,6 +282,53 @@ function AuthPage() {
           </Tabs>
         </CardContent>
       </Card>
+
+      <Dialog open={forgotOpen} onOpenChange={setForgotOpen}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle className="font-display">
+              {lang === "ar" ? "نسيت كلمة السر" : "Mot de passe oublié"}
+            </DialogTitle>
+            <DialogDescription>
+              {lang === "ar"
+                ? "أدخل بريدك الإلكتروني المسجل وسنرسل لك رابط إعادة التعيين."
+                : "Entrez votre e-mail enregistré et nous vous enverrons un lien de réinitialisation."}
+            </DialogDescription>
+          </DialogHeader>
+
+          {forgotSent ? (
+            <div className="flex flex-col items-center gap-3 py-4 text-center">
+              <MailCheck className="h-10 w-10 text-primary" />
+              <p className="text-sm text-foreground">
+                {lang === "ar"
+                  ? "تم إرسال رابط إعادة تعيين كلمة السر إلى بريدك الإلكتروني."
+                  : "Un lien de réinitialisation a été envoyé à votre e-mail."}
+              </p>
+              <Button variant="outline" className="w-full" onClick={() => setForgotOpen(false)}>
+                {lang === "ar" ? "حسنًا" : "OK"}
+              </Button>
+            </div>
+          ) : (
+            <form className="space-y-3" onSubmit={handleForgot}>
+              <div className="space-y-1.5">
+                <Label htmlFor="forgot-email">Email</Label>
+                <Input
+                  id="forgot-email"
+                  type="email"
+                  value={forgotEmail}
+                  onChange={(e) => setForgotEmail(e.target.value)}
+                  required
+                  autoFocus
+                />
+              </div>
+              <Button type="submit" className="w-full" disabled={forgotBusy}>
+                {forgotBusy && <Loader2 className="h-4 w-4 animate-spin" />}
+                {lang === "ar" ? "إرسال رابط إعادة التعيين" : "Envoyer le lien"}
+              </Button>
+            </form>
+          )}
+        </DialogContent>
+      </Dialog>
     </AppShell>
   );
 }
