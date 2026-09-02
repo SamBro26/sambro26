@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
-import { Heart, MapPin, MessageSquare, Phone, Lock, BadgeCheck } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Heart, MapPin, MessageSquare, Phone, Lock, BadgeCheck, ChevronLeft, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/AppShell";
 import { useAuth } from "@/hooks/useAuth";
@@ -34,8 +34,22 @@ function AdDetail() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [busy, setBusy] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   const ad = useQuery({ queryKey: ["ad", adId], queryFn: () => getAd(adId) });
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    const imgs = ad.data?.images ?? [];
+    if (!el || imgs.length <= 1) return;
+    const handleScroll = () => {
+      const idx = Math.round(el.scrollLeft / el.clientWidth);
+      setCurrentIndex(Math.min(Math.max(idx, 0), imgs.length - 1));
+    };
+    el.addEventListener("scroll", handleScroll, { passive: true });
+    return () => el.removeEventListener("scroll", handleScroll);
+  }, [ad.data?.images]);
 
   if (ad.isLoading) {
     return (
@@ -61,6 +75,15 @@ function AdDetail() {
   const price = formatDzd(data.price, t("dzd"));
   const advance = formatDzd(data.advance_payment, t("dzd"));
 
+  const scrollTo = (index: number) => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const child = el.children[index] as HTMLElement | undefined;
+    if (!child) return;
+    el.scrollTo({ left: child.offsetLeft, behavior: "smooth" });
+    setCurrentIndex(index);
+  };
+
   async function startConversation() {
     if (!user) {
       toast.error(lang === "ar" ? "يجب تسجيل الدخول أولا" : "Connectez-vous d'abord");
@@ -83,24 +106,75 @@ function AdDetail() {
     <AppShell>
       <div className="grid gap-5 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
         <div className="space-y-4">
-          <div className="overflow-hidden rounded-3xl bg-muted shadow-card">
-            {images.length ? (
-              <img
-                src={images[0].url}
-                alt={pickTypeLabel(
-                  {
-                    labelAr: data.property_type?.label_ar ?? "",
-                    labelFr: data.property_type?.label_fr ?? "",
-                    labelEn: data.property_type?.label_en ?? "",
-                  },
-                  lang,
-                )}
-                className="aspect-[16/10] w-full object-cover"
-              />
-            ) : (
-              <div className="grid aspect-[16/10] place-items-center bg-hero-gradient font-display text-4xl font-black text-primary-foreground/70">
-                دبرلي
-              </div>
+          <div className="relative overflow-hidden rounded-3xl bg-muted shadow-card">
+            <div
+              ref={scrollRef}
+              dir="ltr"
+              className="flex snap-x snap-mandatory overflow-x-auto"
+              style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+            >
+              {images.length ? (
+                images.map((image, idx) => (
+                  <div key={image.id ?? idx} className="w-full flex-shrink-0 snap-center">
+                    <img
+                      src={image.url}
+                      alt={pickTypeLabel(
+                        {
+                          labelAr: data.property_type?.label_ar ?? "",
+                          labelFr: data.property_type?.label_fr ?? "",
+                          labelEn: data.property_type?.label_en ?? "",
+                        },
+                        lang,
+                      )}
+                      className="aspect-[16/10] w-full object-cover"
+                    />
+                  </div>
+                ))
+              ) : (
+                <div className="grid aspect-[16/10] w-full place-items-center bg-hero-gradient font-display text-4xl font-black text-primary-foreground/70">
+                  دبرلي
+                </div>
+              )}
+            </div>
+
+            {images.length > 1 && (
+              <>
+                <button
+                  type="button"
+                  aria-label="Previous"
+                  onClick={() => scrollTo(Math.max(currentIndex - 1, 0))}
+                  className="absolute left-2 top-1/2 z-10 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full bg-background/80 text-foreground shadow backdrop-blur transition hover:bg-background"
+                >
+                  <ChevronLeft className="h-5 w-5" />
+                </button>
+                <button
+                  type="button"
+                  aria-label="Next"
+                  onClick={() => scrollTo(Math.min(currentIndex + 1, images.length - 1))}
+                  className="absolute right-2 top-1/2 z-10 grid h-9 w-9 -translate-y-1/2 place-items-center rounded-full bg-background/80 text-foreground shadow backdrop-blur transition hover:bg-background"
+                >
+                  <ChevronRight className="h-5 w-5" />
+                </button>
+
+                <div className="absolute bottom-3 left-1/2 z-10 flex -translate-x-1/2 items-center gap-2 rounded-full bg-background/80 px-3 py-1.5 text-xs font-medium shadow backdrop-blur">
+                  <span>
+                    {currentIndex + 1} / {images.length}
+                  </span>
+                  <div className="flex gap-1">
+                    {images.map((_, idx) => (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={() => scrollTo(idx)}
+                        className={`h-1.5 rounded-full transition-all ${
+                          idx === currentIndex ? "w-4 bg-primary" : "w-1.5 bg-muted-foreground/40"
+                        }`}
+                        aria-label={`Go to slide ${idx + 1}`}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </>
             )}
           </div>
 
