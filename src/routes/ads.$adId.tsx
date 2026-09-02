@@ -34,8 +34,22 @@ function AdDetail() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [busy, setBusy] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   const ad = useQuery({ queryKey: ["ad", adId], queryFn: () => getAd(adId) });
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    const imgs = ad.data?.images ?? [];
+    if (!el || imgs.length <= 1) return;
+    const handleScroll = () => {
+      const idx = Math.round(el.scrollLeft / el.clientWidth);
+      setCurrentIndex(Math.min(Math.max(idx, 0), imgs.length - 1));
+    };
+    el.addEventListener("scroll", handleScroll, { passive: true });
+    return () => el.removeEventListener("scroll", handleScroll);
+  }, [ad.data?.images]);
 
   if (ad.isLoading) {
     return (
@@ -60,20 +74,6 @@ function AdDetail() {
   const images = [...(data.images ?? [])].sort((a, b) => a.sort_order - b.sort_order);
   const price = formatDzd(data.price, t("dzd"));
   const advance = formatDzd(data.advance_payment, t("dzd"));
-
-  const scrollRef = useRef<HTMLDivElement>(null);
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  useEffect(() => {
-    const el = scrollRef.current;
-    if (!el || images.length <= 1) return;
-    const handleScroll = () => {
-      const idx = Math.round(el.scrollLeft / el.clientWidth);
-      setCurrentIndex(Math.min(Math.max(idx, 0), images.length - 1));
-    };
-    el.addEventListener("scroll", handleScroll, { passive: true });
-    return () => el.removeEventListener("scroll", handleScroll);
-  }, [images.length]);
 
   const scrollTo = (index: number) => {
     const el = scrollRef.current;
