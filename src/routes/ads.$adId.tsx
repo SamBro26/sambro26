@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
-import { Heart, MapPin, MessageSquare, Phone, Lock, BadgeCheck } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Heart, MapPin, MessageSquare, Phone, Lock, BadgeCheck, ChevronLeft, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/AppShell";
 import { useAuth } from "@/hooks/useAuth";
