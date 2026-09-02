@@ -15,6 +15,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as MessagesRouteImport } from './routes/messages'
 import { Route as PostRouteImport } from './routes/post'
 import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AdsAdIdRouteImport } from './routes/ads.$adId'
 
 const IndexRoute = IndexRouteImport.update({
@@ -47,6 +48,11 @@ const ProfileRoute = ProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdsAdIdRoute = AdsAdIdRouteImport.update({
   id: '/ads/$adId',
   path: '/ads/$adId',
@@ -60,6 +66,7 @@ export interface FileRoutesByFullPath {
   '/messages': typeof MessagesRoute
   '/post': typeof PostRoute
   '/profile': typeof ProfileRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/ads/$adId': typeof AdsAdIdRoute
 }
 export interface FileRoutesByTo {
@@ -69,6 +76,7 @@ export interface FileRoutesByTo {
   '/messages': typeof MessagesRoute
   '/post': typeof PostRoute
   '/profile': typeof ProfileRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/ads/$adId': typeof AdsAdIdRoute
 }
 export interface FileRoutesById {
@@ -79,15 +87,30 @@ export interface FileRoutesById {
   '/messages': typeof MessagesRoute
   '/post': typeof PostRoute
   '/profile': typeof ProfileRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/ads/$adId': typeof AdsAdIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
-    '/' | '/admin' | '/auth' | '/messages' | '/post' | '/profile' | '/ads/$adId'
+    | '/'
+    | '/admin'
+    | '/auth'
+    | '/messages'
+    | '/post'
+    | '/profile'
+    | '/reset-password'
+    | '/ads/$adId'
   fileRoutesByTo: FileRoutesByTo
   to:
-    '/' | '/admin' | '/auth' | '/messages' | '/post' | '/profile' | '/ads/$adId'
+    | '/'
+    | '/admin'
+    | '/auth'
+    | '/messages'
+    | '/post'
+    | '/profile'
+    | '/reset-password'
+    | '/ads/$adId'
   id:
     | '__root__'
     | '/'
@@ -96,6 +119,7 @@ export interface FileRouteTypes {
     | '/messages'
     | '/post'
     | '/profile'
+    | '/reset-password'
     | '/ads/$adId'
   fileRoutesById: FileRoutesById
 }
@@ -106,6 +130,7 @@ export interface RootRouteChildren {
   MessagesRoute: typeof MessagesRoute
   PostRoute: typeof PostRoute
   ProfileRoute: typeof ProfileRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   AdsAdIdRoute: typeof AdsAdIdRoute
 }
 
@@ -153,6 +178,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/ads/$adId': {
       id: '/ads/$adId'
       path: '/ads/$adId'
@@ -170,6 +202,7 @@ const rootRouteChildren: RootRouteChildren = {
   MessagesRoute: MessagesRoute,
   PostRoute: PostRoute,
   ProfileRoute: ProfileRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   AdsAdIdRoute: AdsAdIdRoute,
 }
 export const routeTree = rootRouteImport
