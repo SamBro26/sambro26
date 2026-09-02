@@ -53,12 +53,35 @@ function AuthPage() {
 
   const [inEmail, setInEmail] = useState("");
   const [inPassword, setInPassword] = useState("");
+  const [forgotOpen, setForgotOpen] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState("");
+  const [forgotBusy, setForgotBusy] = useState(false);
+  const [forgotSent, setForgotSent] = useState(false);
 
   const [upName, setUpName] = useState("");
   const [upEmail, setUpEmail] = useState("");
   const [upPhone, setUpPhone] = useState("");
   const [upPassword, setUpPassword] = useState("");
   const [upRole, setUpRole] = useState<"INDIVIDUAL" | "AGENCY">("INDIVIDUAL");
+
+  async function handleForgot(e: React.FormEvent) {
+    e.preventDefault();
+    const email = z.string().trim().email().max(255).safeParse(forgotEmail);
+    if (!email.success) {
+      toast.error(lang === "ar" ? "أدخل بريدًا إلكترونيًا صالحًا" : "Entrez un e-mail valide");
+      return;
+    }
+    setForgotBusy(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(email.data, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    setForgotBusy(false);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    setForgotSent(true);
+  }
 
   async function handleSignIn(e: React.FormEvent) {
     e.preventDefault();
