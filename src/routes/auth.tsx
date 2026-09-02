@@ -12,6 +12,14 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Loader2, MailCheck } from "lucide-react";
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -53,12 +61,35 @@ function AuthPage() {
 
   const [inEmail, setInEmail] = useState("");
   const [inPassword, setInPassword] = useState("");
+  const [forgotOpen, setForgotOpen] = useState(false);
+  const [forgotEmail, setForgotEmail] = useState("");
+  const [forgotBusy, setForgotBusy] = useState(false);
+  const [forgotSent, setForgotSent] = useState(false);
 
   const [upName, setUpName] = useState("");
   const [upEmail, setUpEmail] = useState("");
   const [upPhone, setUpPhone] = useState("");
   const [upPassword, setUpPassword] = useState("");
   const [upRole, setUpRole] = useState<"INDIVIDUAL" | "AGENCY">("INDIVIDUAL");
+
+  async function handleForgot(e: React.FormEvent) {
+    e.preventDefault();
+    const email = z.string().trim().email().max(255).safeParse(forgotEmail);
+    if (!email.success) {
+      toast.error(lang === "ar" ? "أدخل بريدًا إلكترونيًا صالحًا" : "Entrez un e-mail valide");
+      return;
+    }
+    setForgotBusy(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(email.data, {
+      redirectTo: `${window.location.origin}/reset-password`,
+    });
+    setForgotBusy(false);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    setForgotSent(true);
+  }
 
   async function handleSignIn(e: React.FormEvent) {
     e.preventDefault();
@@ -163,6 +194,19 @@ function AuthPage() {
                     onChange={(e) => setInPassword(e.target.value)}
                     required
                   />
+                  <div className="flex justify-end pt-1">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setForgotEmail(inEmail);
+                        setForgotSent(false);
+                        setForgotOpen(true);
+                      }}
+                      className="text-xs text-primary underline-offset-4 hover:underline"
+                    >
+                      {lang === "ar" ? "نسيت كلمة السر؟" : "Mot de passe oublié ?"}
+                    </button>
+                  </div>
                 </div>
                 <Button type="submit" className="w-full" disabled={busy}>
                   {t("signIn")}
@@ -238,6 +282,53 @@ function AuthPage() {
           </Tabs>
         </CardContent>
       </Card>
+
+      <Dialog open={forgotOpen} onOpenChange={setForgotOpen}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle className="font-display">
+              {lang === "ar" ? "نسيت كلمة السر" : "Mot de passe oublié"}
+            </DialogTitle>
+            <DialogDescription>
+              {lang === "ar"
+                ? "أدخل بريدك الإلكتروني المسجل وسنرسل لك رابط إعادة التعيين."
+                : "Entrez votre e-mail enregistré et nous vous enverrons un lien de réinitialisation."}
+            </DialogDescription>
+          </DialogHeader>
+
+          {forgotSent ? (
+            <div className="flex flex-col items-center gap-3 py-4 text-center">
+              <MailCheck className="h-10 w-10 text-primary" />
+              <p className="text-sm text-foreground">
+                {lang === "ar"
+                  ? "تم إرسال رابط إعادة تعيين كلمة السر إلى بريدك الإلكتروني."
+                  : "Un lien de réinitialisation a été envoyé à votre e-mail."}
+              </p>
+              <Button variant="outline" className="w-full" onClick={() => setForgotOpen(false)}>
+                {lang === "ar" ? "حسنًا" : "OK"}
+              </Button>
+            </div>
+          ) : (
+            <form className="space-y-3" onSubmit={handleForgot}>
+              <div className="space-y-1.5">
+                <Label htmlFor="forgot-email">Email</Label>
+                <Input
+                  id="forgot-email"
+                  type="email"
+                  value={forgotEmail}
+                  onChange={(e) => setForgotEmail(e.target.value)}
+                  required
+                  autoFocus
+                />
+              </div>
+              <Button type="submit" className="w-full" disabled={forgotBusy}>
+                {forgotBusy && <Loader2 className="h-4 w-4 animate-spin" />}
+                {lang === "ar" ? "إرسال رابط إعادة التعيين" : "Envoyer le lien"}
+              </Button>
+            </form>
+          )}
+        </DialogContent>
+      </Dialog>
     </AppShell>
   );
 }
