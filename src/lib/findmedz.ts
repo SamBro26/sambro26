@@ -242,6 +242,36 @@ export async function sendMessage(conversationId: string, senderId: string, cont
   if (error) throw error;
 }
 
+/** Count unread messages addressed to the user (sent by others in their conversations). */
+export async function countUnreadMessages(userId: string): Promise<number> {
+  const { data: parts, error: partsError } = await supabase
+    .from("conversation_participants")
+    .select("conversation_id")
+    .eq("user_id", userId);
+  if (partsError) throw partsError;
+  const conversationIds = (parts ?? []).map((p) => p.conversation_id);
+  if (conversationIds.length === 0) return 0;
+  const { count, error } = await supabase
+    .from("messages")
+    .select("id", { count: "exact", head: true })
+    .in("conversation_id", conversationIds)
+    .eq("is_read", false)
+    .neq("sender_id", userId);
+  if (error) throw error;
+  return count ?? 0;
+}
+
+/** Mark all messages in a conversation sent by others as read. */
+export async function markConversationRead(conversationId: string, userId: string) {
+  const { error } = await supabase
+    .from("messages")
+    .update({ is_read: true })
+    .eq("conversation_id", conversationId)
+    .eq("is_read", false)
+    .neq("sender_id", userId);
+  if (error) throw error;
+}
+
 export function formatDzd(value: number | string | null | undefined, suffix: string) {
   if (value === null || value === undefined) return null;
   const n = typeof value === "string" ? Number(value) : value;
