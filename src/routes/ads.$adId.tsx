@@ -156,7 +156,7 @@ function AdDetail() {
                   <ChevronRight className="h-5 w-5" />
                 </button>
 
-                <div className="absolute bottom-3 left-1/2 z-10 flex -translate-x-1/2 items-center gap-2 rounded-full bg-background/80 px-3 py-1.5 text-xs font-medium shadow backdrop-blur">
+                <div dir="ltr" className="absolute bottom-3 left-1/2 z-10 flex -translate-x-1/2 items-center gap-2 rounded-full bg-background/80 px-3 py-1.5 text-xs font-medium shadow backdrop-blur">
                   <span>
                     {currentIndex + 1} / {images.length}
                   </span>
