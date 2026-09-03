@@ -195,3 +195,26 @@
 @utility shadow-float {
   box-shadow: var(--shadow-float);
 }
+
+/* Hide Lovable preview/developer badge UI when running inside Capacitor/WebView. */
+.in-capacitor [data-lovable-badge],
+.in-capacitor .lovable-badge,
+.in-capacitor .lovable-preview-badge,
+.in-capacitor .lovable-floating-badge,
+.in-capacitor [class*="lovable-badge"],
+.in-capacitor [class*="preview-badge"],
+.in-capacitor [class*="floating-badge"],
+.in-capacitor [class*="lovable-close"],
+.in-capacitor [class*="lovable-dismiss"],
+.in-capacitor iframe[src*="lovable"],
+.in-capacitor iframe[src*="gptengineer"],
+.in-capacitor a[href*="lovable.dev"],
+.in-capacitor a[href*="gptengineer.app"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  pointer-events: none !important;
+  height: 0 !important;
+  width: 0 !important;
+  z-index: -9999 !important;
+}
