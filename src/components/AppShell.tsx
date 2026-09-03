@@ -1,12 +1,23 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Home, MessageSquare, PlusCircle, UserRound, Languages, ShieldCheck } from "lucide-react";
-import type { ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { checkIsAdmin } from "@/lib/admin";
+import { countUnreadMessages } from "@/lib/findmedz";
 import { useLang } from "@/lib/i18n";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+
+function UnreadBadge({ count }: { count: number }) {
+  if (count <= 0) return null;
+  return (
+    <span className="absolute -top-1.5 -end-1.5 grid min-h-4.5 min-w-4.5 place-items-center rounded-full bg-destructive px-1 text-[10px] font-bold leading-none text-destructive-foreground shadow-sm">
+      {count > 99 ? "99+" : count}
+    </span>
+  );
+}
 
 function LangToggle() {
   const { lang, setLang } = useLang();
