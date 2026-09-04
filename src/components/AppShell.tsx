@@ -113,11 +113,16 @@ export function AppShell({ children }: { children: ReactNode }) {
                   key={item.to}
                   to={item.to}
                   className={cn(
-                    "rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-primary-foreground/15",
+                    "relative rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-primary-foreground/15",
                     pathname === item.to && "bg-primary-foreground/20",
                   )}
                 >
                   {item.label}
+                  {item.to === "/messages" && unreadCount > 0 && (
+                    <span className="absolute -top-1 -end-1 grid min-h-4.5 min-w-4.5 place-items-center rounded-full bg-destructive px-1 text-[10px] font-bold leading-none text-destructive-foreground shadow-sm">
+                      {unreadCount > 99 ? "99+" : unreadCount}
+                    </span>
+                  )}
                 </Link>
               ))}
             </div>
