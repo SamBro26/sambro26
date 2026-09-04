@@ -7,7 +7,7 @@ import { z } from "zod";
 import { AppShell } from "@/components/AppShell";
 import { useAuth } from "@/hooks/useAuth";
 import { useLang } from "@/lib/i18n";
-import { listConversations, listMessages, sendMessage } from "@/lib/findmedz";
+import { listConversations, listMessages, markConversationRead, sendMessage } from "@/lib/findmedz";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -82,6 +82,17 @@ function MessagesPage() {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages.data?.length]);
+
+  // Mark incoming messages as read when the conversation is open.
+  useEffect(() => {
+    if (!activeId || !user || !messages.data) return;
+    const hasUnread = messages.data.some((m) => !m.is_read && m.sender_id !== user.id);
+    if (!hasUnread) return;
+    void markConversationRead(activeId, user.id).then(() => {
+      void queryClient.invalidateQueries({ queryKey: ["messages", activeId] });
+      void queryClient.invalidateQueries({ queryKey: ["unread-messages", user.id] });
+    });
+  }, [activeId, user, messages.data, queryClient]);
 
   if (!loading && !user) {
     return (
