@@ -46,6 +46,34 @@ export function AppShell({ children }: { children: ReactNode }) {
     staleTime: 5 * 60 * 1000,
   });
 
+  const queryClient = useQueryClient();
+
+  const unread = useQuery({
+    queryKey: ["unread-messages", user?.id],
+    queryFn: () => countUnreadMessages(user!.id),
+    enabled: !!user,
+  });
+
+  // Realtime: refresh the unread badge instantly on new/updated messages.
+  useEffect(() => {
+    if (!user) return;
+    const channel = supabase
+      .channel(`unread-badge-${user.id}`)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "messages" },
+        () => {
+          void queryClient.invalidateQueries({ queryKey: ["unread-messages", user.id] });
+        },
+      )
+      .subscribe();
+    return () => {
+      void supabase.removeChannel(channel);
+    };
+  }, [user?.id, queryClient]);
+
+  const unreadCount = unread.data ?? 0;
+
   const nav = [
     { to: "/", label: t("home"), icon: Home },
     { to: "/post", label: t("postAd"), icon: PlusCircle },
