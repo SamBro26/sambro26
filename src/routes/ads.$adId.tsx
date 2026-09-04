@@ -39,6 +39,13 @@ function AdDetail() {
 
   const ad = useQuery({ queryKey: ["ad", adId], queryFn: () => getAd(adId) });
 
+  // Count a view once per ad per browser session (owner excluded server-side).
+  useEffect(() => {
+    if (!ad.data) return;
+    if (user && ad.data.owner?.id === user.id) return;
+    void trackAdView(adId);
+  }, [adId, ad.data, user]);
+
   useEffect(() => {
     const el = scrollRef.current;
     const imgs = ad.data?.images ?? [];
