@@ -167,7 +167,10 @@ export function AppShell({ children }: { children: ReactNode }) {
                   active ? "text-primary" : "text-muted-foreground",
                 )}
               >
-                <item.icon className={cn("h-5 w-5", active && "text-primary")} />
+                <span className="relative">
+                  <item.icon className={cn("h-5 w-5", active && "text-primary")} />
+                  {item.to === "/messages" && <UnreadBadge count={unreadCount} />}
+                </span>
                 {item.label}
               </Link>
             );
