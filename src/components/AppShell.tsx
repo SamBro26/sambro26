@@ -46,6 +46,34 @@ export function AppShell({ children }: { children: ReactNode }) {
     staleTime: 5 * 60 * 1000,
   });
 
+  const queryClient = useQueryClient();
+
+  const unread = useQuery({
+    queryKey: ["unread-messages", user?.id],
+    queryFn: () => countUnreadMessages(user!.id),
+    enabled: !!user,
+  });
+
+  // Realtime: refresh the unread badge instantly on new/updated messages.
+  useEffect(() => {
+    if (!user) return;
+    const channel = supabase
+      .channel(`unread-badge-${user.id}`)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "messages" },
+        () => {
+          void queryClient.invalidateQueries({ queryKey: ["unread-messages", user.id] });
+        },
+      )
+      .subscribe();
+    return () => {
+      void supabase.removeChannel(channel);
+    };
+  }, [user?.id, queryClient]);
+
+  const unreadCount = unread.data ?? 0;
+
   const nav = [
     { to: "/", label: t("home"), icon: Home },
     { to: "/post", label: t("postAd"), icon: PlusCircle },
@@ -85,11 +113,16 @@ export function AppShell({ children }: { children: ReactNode }) {
                   key={item.to}
                   to={item.to}
                   className={cn(
-                    "rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-primary-foreground/15",
+                    "relative rounded-lg px-3 py-2 text-sm font-medium transition-colors hover:bg-primary-foreground/15",
                     pathname === item.to && "bg-primary-foreground/20",
                   )}
                 >
                   {item.label}
+                  {item.to === "/messages" && unreadCount > 0 && (
+                    <span className="absolute -top-1 -end-1 grid min-h-4.5 min-w-4.5 place-items-center rounded-full bg-destructive px-1 text-[10px] font-bold leading-none text-destructive-foreground shadow-sm">
+                      {unreadCount > 99 ? "99+" : unreadCount}
+                    </span>
+                  )}
                 </Link>
               ))}
             </div>
@@ -134,7 +167,10 @@ export function AppShell({ children }: { children: ReactNode }) {
                   active ? "text-primary" : "text-muted-foreground",
                 )}
               >
-                <item.icon className={cn("h-5 w-5", active && "text-primary")} />
+                <span className="relative">
+                  <item.icon className={cn("h-5 w-5", active && "text-primary")} />
+                  {item.to === "/messages" && <UnreadBadge count={unreadCount} />}
+                </span>
                 {item.label}
               </Link>
             );
