@@ -196,20 +196,22 @@
   box-shadow: var(--shadow-float);
 }
 
-/* Hide Lovable preview/developer badge UI when running inside Capacitor/WebView. */
-.in-capacitor [data-lovable-badge],
-.in-capacitor .lovable-badge,
-.in-capacitor .lovable-preview-badge,
-.in-capacitor .lovable-floating-badge,
-.in-capacitor [class*="lovable-badge"],
-.in-capacitor [class*="preview-badge"],
-.in-capacitor [class*="floating-badge"],
-.in-capacitor [class*="lovable-close"],
-.in-capacitor [class*="lovable-dismiss"],
-.in-capacitor iframe[src*="lovable"],
-.in-capacitor iframe[src*="gptengineer"],
-.in-capacitor a[href*="lovable.dev"],
-.in-capacitor a[href*="gptengineer.app"] {
+/* Global override: hide Lovable preview/developer badge UI everywhere (preview, published, Capacitor). */
+[data-lovable-badge],
+.lovable-badge,
+.lovable-preview-badge,
+.lovable-floating-badge,
+[class*="lovable-badge"],
+[class*="preview-badge"],
+[class*="floating-badge"],
+[class*="lovable-close"],
+[class*="lovable-dismiss"],
+[id*="lovable-badge"],
+[id*="gptengineer"],
+iframe[src*="lovable"],
+iframe[src*="gptengineer"],
+a[href*="lovable.dev"],
+a[href*="gptengineer.app"] {
   display: none !important;
   visibility: hidden !important;
   opacity: 0 !important;
