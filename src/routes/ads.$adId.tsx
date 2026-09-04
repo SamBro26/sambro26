@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { AppShell } from "@/components/AppShell";
 import { useAuth } from "@/hooks/useAuth";
 import { useLang } from "@/lib/i18n";
-import { formatDzd, getAd, openConversation } from "@/lib/findmedz";
+import { formatDzd, getAd, openConversation, trackAdView } from "@/lib/findmedz";
 import { contactOptionsFor, pickName, pickTypeLabel, ROLE_LABELS } from "@/constants";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -38,6 +38,13 @@ function AdDetail() {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const ad = useQuery({ queryKey: ["ad", adId], queryFn: () => getAd(adId) });
+
+  // Count a view once per ad per browser session (owner excluded server-side).
+  useEffect(() => {
+    if (!ad.data) return;
+    if (user && ad.data.owner?.id === user.id) return;
+    void trackAdView(adId);
+  }, [adId, ad.data, user]);
 
   useEffect(() => {
     const el = scrollRef.current;

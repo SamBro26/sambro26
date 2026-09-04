@@ -56,6 +56,27 @@ export async function getAd(id: string) {
   return data;
 }
 
+const VIEWED_KEY = "findmedz_viewed_ads";
+
+/**
+ * Increment the view counter for an ad, at most once per browser session
+ * (viewed IDs are kept in localStorage so refreshes don't inflate the count).
+ * The database function itself skips the ad's owner.
+ */
+export async function trackAdView(adId: string) {
+  try {
+    const viewed: string[] = JSON.parse(localStorage.getItem(VIEWED_KEY) ?? "[]");
+    if (viewed.includes(adId)) return;
+    const { error } = await supabase.rpc("increment_ad_views", { _ad_id: adId });
+    if (error) return;
+    viewed.push(adId);
+    // Keep the list bounded so localStorage never grows uncontrolled.
+    localStorage.setItem(VIEWED_KEY, JSON.stringify(viewed.slice(-500)));
+  } catch {
+    // Tracking must never break the page.
+  }
+}
+
 /** Ads owned by the signed-in user (any status), excluding soft-deleted ones. */
 export async function listMyAds(userId: string) {
   const { data, error } = await supabase
