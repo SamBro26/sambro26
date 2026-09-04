@@ -196,7 +196,7 @@
   box-shadow: var(--shadow-float);
 }
 
-/* Hide Lovable preview/developer badge UI when running inside Capacitor/WebView. */
+/* Global override: hide Lovable preview/developer badge UI everywhere (preview, published, Capacitor). */
 [data-lovable-badge],
 .lovable-badge,
 .lovable-preview-badge,
@@ -206,6 +206,8 @@
 [class*="floating-badge"],
 [class*="lovable-close"],
 [class*="lovable-dismiss"],
+[id*="lovable-badge"],
+[id*="gptengineer"],
 iframe[src*="lovable"],
 iframe[src*="gptengineer"],
 a[href*="lovable.dev"],
