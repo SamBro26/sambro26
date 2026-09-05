@@ -139,11 +139,23 @@ function ProfilePage() {
           {profile?.full_name || (lang === "ar" ? "حسابي" : "Mon compte")}
         </h1>
         <p className="mt-1 text-sm opacity-90">{profile?.email ?? user?.email}</p>
-        <div className="mt-3 flex flex-wrap gap-2">
+        <div className="mt-3 flex flex-wrap items-center gap-2">
           <Badge className="bg-primary-foreground/20">{profile?.role ?? "INDIVIDUAL"}</Badge>
           <Badge className="bg-premium-gradient text-premium-foreground">
             {profile?.account_tier ?? "FREE"}
           </Badge>
+          {isAdmin.data === true && (
+            <Button
+              asChild
+              size="sm"
+              className="ms-auto gap-1.5 bg-premium-gradient text-accent-foreground hover:opacity-90"
+            >
+              <Link to="/admin">
+                <ShieldCheck className="h-4 w-4" />
+                {lang === "ar" ? "لوحة التحكم" : "Admin Panel"}
+              </Link>
+            </Button>
+          )}
         </div>
       </section>
 
