@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
-import { Pencil, Trash2, Eye, MapPin } from "lucide-react";
+import { Pencil, Trash2, Eye, MapPin, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/AppShell";
 import { useAuth } from "@/hooks/useAuth";
@@ -18,6 +18,7 @@ import {
   type AdRow,
 } from "@/lib/findmedz";
 import { pickName, pickTypeLabel } from "@/constants";
+import { checkIsAdmin } from "@/lib/admin";
 import { AD_STATUS_LABELS, type AdStatus } from "@/constants/ad-status";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -116,6 +117,13 @@ function ProfilePage() {
     enabled: !!user,
   });
 
+  const isAdmin = useQuery({
+    queryKey: ["is-admin", user?.id],
+    queryFn: () => checkIsAdmin(user!.id),
+    enabled: !!user,
+    staleTime: 5 * 60 * 1000,
+  });
+
   async function confirmDelete() {
     if (!deleting) return;
     setBusy(true);
@@ -139,11 +147,23 @@ function ProfilePage() {
           {profile?.full_name || (lang === "ar" ? "حسابي" : "Mon compte")}
         </h1>
         <p className="mt-1 text-sm opacity-90">{profile?.email ?? user?.email}</p>
-        <div className="mt-3 flex flex-wrap gap-2">
+        <div className="mt-3 flex flex-wrap items-center gap-2">
           <Badge className="bg-primary-foreground/20">{profile?.role ?? "INDIVIDUAL"}</Badge>
           <Badge className="bg-premium-gradient text-premium-foreground">
             {profile?.account_tier ?? "FREE"}
           </Badge>
+          {isAdmin.data === true && (
+            <Button
+              asChild
+              size="sm"
+              className="ms-auto gap-1.5 bg-premium-gradient text-accent-foreground hover:opacity-90"
+            >
+              <Link to="/admin">
+                <ShieldCheck className="h-4 w-4" />
+                {lang === "ar" ? "لوحة التحكم" : "Admin Panel"}
+              </Link>
+            </Button>
+          )}
         </div>
       </section>
 
