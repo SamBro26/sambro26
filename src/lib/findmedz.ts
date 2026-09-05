@@ -299,3 +299,62 @@ export function formatDzd(value: number | string | null | undefined, suffix: str
   if (!Number.isFinite(n)) return null;
   return `${new Intl.NumberFormat("fr-DZ").format(n)} ${suffix}`;
 }
+/* ---------------------------------- Favorites --------------------------------- */
+
+/** IDs of the listings the user has favorited (used to fill the hearts). */
+export async function listMyFavoriteIds(userId: string): Promise<string[]> {
+  const { data, error } = await supabase
+    .from("favorites")
+    .select("listing_id")
+    .eq("user_id", userId);
+  if (error) throw error;
+  return (data ?? []).map((row) => row.listing_id);
+}
+
+/** Add or remove a favorite. Returns the new favorited state. */
+export async function toggleFavorite(userId: string, listingId: string, favorited: boolean) {
+  if (favorited) {
+    const { error } = await supabase
+      .from("favorites")
+      .delete()
+      .eq("user_id", userId)
+      .eq("listing_id", listingId);
+    if (error) throw error;
+    return false;
+  }
+  const { error } = await supabase
+    .from("favorites")
+    .insert({ user_id: userId, listing_id: listingId });
+  if (error && error.code !== "23505") throw error;
+  return true;
+}
+
+/** Full listings the user has favorited, newest first. */
+export async function listFavoriteAds(userId: string): Promise<AdRow[]> {
+  const { data, error } = await supabase
+    .from("favorites")
+    .select(`created_at, ad:ads(${AD_SELECT})`)
+    .eq("user_id", userId)
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return (data ?? [])
+    .map((row) => row.ad)
+    .filter((ad): ad is AdRow => Boolean(ad) && !(ad as { is_deleted?: boolean }).is_deleted);
+}
+
+/* ----------------------------------- Reports ---------------------------------- */
+
+export async function reportAd(input: {
+  reporterId: string;
+  listingId: string;
+  reason: string;
+  details?: string;
+}) {
+  const { error } = await supabase.from("reports").insert({
+    reporter_id: input.reporterId,
+    listing_id: input.listingId,
+    reason: input.reason,
+    details: input.details?.trim() || null,
+  });
+  if (error) throw error;
+}
