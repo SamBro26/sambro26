@@ -116,6 +116,13 @@ function ProfilePage() {
     enabled: !!user,
   });
 
+  const isAdmin = useQuery({
+    queryKey: ["is-admin", user?.id],
+    queryFn: () => checkIsAdmin(user!.id),
+    enabled: !!user,
+    staleTime: 5 * 60 * 1000,
+  });
+
   async function confirmDelete() {
     if (!deleting) return;
     setBusy(true);
