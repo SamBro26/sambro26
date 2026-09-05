@@ -18,6 +18,7 @@ import {
   type AdRow,
 } from "@/lib/findmedz";
 import { pickName, pickTypeLabel } from "@/constants";
+import { checkIsAdmin } from "@/lib/admin";
 import { AD_STATUS_LABELS, type AdStatus } from "@/constants/ad-status";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
