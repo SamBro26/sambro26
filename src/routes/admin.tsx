@@ -184,11 +184,25 @@ function AdminPage() {
     enabled: admin.data === true,
   });
 
+  const reports = useQuery({
+    queryKey: ["admin-reports"],
+    queryFn: listReports,
+    enabled: admin.data === true,
+  });
+
+  const statusMutation = useMutation({
+    mutationFn: ({ id, status }: { id: string; status: "OPEN" | "REVIEWED" | "DISMISSED" }) =>
+      setReportStatus(id, status),
+    onSuccess: () => void qc.invalidateQueries({ queryKey: ["admin-reports"] }),
+    onError: (e: Error) => toast.error(e.message),
+  });
+
   const hideMutation = useMutation({
     mutationFn: ({ id, hidden }: { id: string; hidden: boolean }) => setAdDeleted(id, hidden),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ["admin-ads"] });
       void qc.invalidateQueries({ queryKey: ["ads"] });
+      void qc.invalidateQueries({ queryKey: ["admin-reports"] });
     },
     onError: (e: Error) => toast.error(e.message),
   });
