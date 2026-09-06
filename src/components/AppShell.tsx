@@ -2,6 +2,7 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Home, MessageSquare, PlusCircle, UserRound, Languages, ShieldCheck } from "lucide-react";
 import { useEffect, type ReactNode } from "react";
+import { useAdMobBanner } from "@/hooks/useAdMobBanner";
 import { useAuth } from "@/hooks/useAuth";
 import { checkIsAdmin } from "@/lib/admin";
 import { countUnreadMessages } from "@/lib/findmedz";
@@ -35,6 +36,7 @@ function LangToggle() {
 }
 
 export function AppShell({ children }: { children: ReactNode }) {
+  const bannerHeight = useAdMobBanner();
   const { t, dir, lang } = useLang();
   const { user, signOut } = useAuth();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
