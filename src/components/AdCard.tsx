@@ -94,7 +94,12 @@ export function AdCard({ ad }: { ad: AdRow }) {
             {ad.views_count}
           </span>
         </div>
+        <div className="flex items-center gap-1 border-t border-border pt-2">
+          <FavoriteButton adId={ad.id} />
+          <ReportDialog adId={ad.id} />
+        </div>
       </div>
+
     </Link>
   );
 }
