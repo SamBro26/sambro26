@@ -4,11 +4,13 @@ import { useEffect, useMemo, useState } from "react";
 import { Pencil, Trash2, Eye, MapPin, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/AppShell";
+import { AdCard } from "@/components/AdCard";
 import { useAuth } from "@/hooks/useAuth";
 import { useLang } from "@/lib/i18n";
 import {
   formatDzd,
   listBaladiyas,
+  listFavoriteAds,
   listMyAds,
   listPropertyTypes,
   listTransactionTypes,
@@ -26,6 +28,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Dialog,
@@ -117,6 +120,12 @@ function ProfilePage() {
     enabled: !!user,
   });
 
+  const favorites = useQuery({
+    queryKey: ["favorite-ads", user?.id],
+    queryFn: () => listFavoriteAds(user!.id),
+    enabled: !!user,
+  });
+
   const isAdmin = useQuery({
     queryKey: ["is-admin", user?.id],
     queryFn: () => checkIsAdmin(user!.id),
@@ -167,84 +176,117 @@ function ProfilePage() {
         </div>
       </section>
 
-      <div className="mb-3 flex items-center justify-between">
-        <h2 className="font-display text-xl font-extrabold">{t("myAds")}</h2>
-        <Button asChild size="sm" className="bg-premium-gradient text-accent-foreground">
-          <Link to="/post">{t("postAd")}</Link>
-        </Button>
-      </div>
+      <Tabs defaultValue="ads">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="ads">{t("myAds")}</TabsTrigger>
+          <TabsTrigger value="favorites">
+            {lang === "ar" ? "المفضلة" : "Favoris"}
+          </TabsTrigger>
+        </TabsList>
 
-      {ads.isLoading ? (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {Array.from({ length: 3 }).map((_, i) => (
-            <Skeleton key={i} className="h-64 rounded-2xl" />
-          ))}
+        <TabsContent value="ads" className="mt-4">
+        <div className="mb-3 flex items-center justify-between">
+          <h2 className="font-display text-xl font-extrabold">{t("myAds")}</h2>
+          <Button asChild size="sm" className="bg-premium-gradient text-accent-foreground">
+            <Link to="/post">{t("postAd")}</Link>
+          </Button>
         </div>
-      ) : (ads.data ?? []).length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-border py-16 text-center text-muted-foreground">
-          {lang === "ar" ? "لم تنشر أي إعلان بعد" : "Vous n'avez publié aucune annonce"}
-        </div>
-      ) : (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {ads.data!.map((ad) => {
-            const cover = [...(ad.images ?? [])].sort((a, b) => a.sort_order - b.sort_order)[0];
-            const status = AD_STATUS_LABELS[ad.status as AdStatus];
-            return (
-              <Card key={ad.id} className="overflow-hidden shadow-card">
-                <Link to="/ads/$adId" params={{ adId: ad.id }} className="block">
-                  <div className="relative aspect-[4/3] bg-muted">
-                    {cover ? (
-                      <img
-                        src={cover.url}
-                        alt={typeLabel(ad.property_type, lang)}
-                        loading="lazy"
-                        className="h-full w-full object-cover"
-                      />
-                    ) : (
-                      <div className="grid h-full w-full place-items-center bg-hero-gradient font-display text-3xl font-black text-primary-foreground/70">
-                        دبرلي
-                      </div>
-                    )}
-                    <Badge className="absolute top-2 ltr:left-2 rtl:right-2 bg-card text-card-foreground">
-                      {status ? status[lang === "ar" ? "ar" : "fr"] : ad.status}
-                    </Badge>
-                  </div>
-                </Link>
-                <CardContent className="space-y-2 p-3">
-                  <h3 className="truncate font-display text-base font-bold">
-                    {typeLabel(ad.property_type, lang)} · {typeLabel(ad.transaction_type, lang)}
-                  </h3>
-                  <p className="flex items-center gap-1 text-xs text-muted-foreground">
-                    <MapPin className="h-3.5 w-3.5 shrink-0" />
-                    <span className="truncate">
-                      {placeName(ad.baladiya, lang)}، {placeName(ad.wilaya, lang)}
-                    </span>
-                  </p>
-                  <div className="flex items-center justify-between">
-                    <span className="font-display text-lg font-extrabold text-primary">
-                      {formatDzd(ad.price, t("dzd")) ?? t("negotiable")}
-                    </span>
-                    <span className="flex items-center gap-1 text-xs text-muted-foreground">
-                      <Eye className="h-3.5 w-3.5" />
-                      {ad.views_count}
-                    </span>
-                  </div>
-                  <div className="grid grid-cols-2 gap-2 pt-1">
-                    <Button variant="outline" size="sm" onClick={() => setEditing(ad)}>
-                      <Pencil className="h-4 w-4" />
-                      {lang === "ar" ? "تعديل" : "Modifier"}
-                    </Button>
-                    <Button variant="destructive" size="sm" onClick={() => setDeleting(ad)}>
-                      <Trash2 className="h-4 w-4" />
-                      {lang === "ar" ? "حذف" : "Supprimer"}
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
-      )}
+
+        {ads.isLoading ? (
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {Array.from({ length: 3 }).map((_, i) => (
+              <Skeleton key={i} className="h-64 rounded-2xl" />
+            ))}
+          </div>
+        ) : (ads.data ?? []).length === 0 ? (
+          <div className="rounded-2xl border border-dashed border-border py-16 text-center text-muted-foreground">
+            {lang === "ar" ? "لم تنشر أي إعلان بعد" : "Vous n'avez publié aucune annonce"}
+          </div>
+        ) : (
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {ads.data!.map((ad) => {
+              const cover = [...(ad.images ?? [])].sort((a, b) => a.sort_order - b.sort_order)[0];
+              const status = AD_STATUS_LABELS[ad.status as AdStatus];
+              return (
+                <Card key={ad.id} className="overflow-hidden shadow-card">
+                  <Link to="/ads/$adId" params={{ adId: ad.id }} className="block">
+                    <div className="relative aspect-[4/3] bg-muted">
+                      {cover ? (
+                        <img
+                          src={cover.url}
+                          alt={typeLabel(ad.property_type, lang)}
+                          loading="lazy"
+                          className="h-full w-full object-cover"
+                        />
+                      ) : (
+                        <div className="grid h-full w-full place-items-center bg-hero-gradient font-display text-3xl font-black text-primary-foreground/70">
+                          دبرلي
+                        </div>
+                      )}
+                      <Badge className="absolute top-2 ltr:left-2 rtl:right-2 bg-card text-card-foreground">
+                        {status ? status[lang === "ar" ? "ar" : "fr"] : ad.status}
+                      </Badge>
+                    </div>
+                  </Link>
+                  <CardContent className="space-y-2 p-3">
+                    <h3 className="truncate font-display text-base font-bold">
+                      {typeLabel(ad.property_type, lang)} · {typeLabel(ad.transaction_type, lang)}
+                    </h3>
+                    <p className="flex items-center gap-1 text-xs text-muted-foreground">
+                      <MapPin className="h-3.5 w-3.5 shrink-0" />
+                      <span className="truncate">
+                        {placeName(ad.baladiya, lang)}، {placeName(ad.wilaya, lang)}
+                      </span>
+                    </p>
+                    <div className="flex items-center justify-between">
+                      <span className="font-display text-lg font-extrabold text-primary">
+                        {formatDzd(ad.price, t("dzd")) ?? t("negotiable")}
+                      </span>
+                      <span className="flex items-center gap-1 text-xs text-muted-foreground">
+                        <Eye className="h-3.5 w-3.5" />
+                        {ad.views_count}
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2 pt-1">
+                      <Button variant="outline" size="sm" onClick={() => setEditing(ad)}>
+                        <Pencil className="h-4 w-4" />
+                        {lang === "ar" ? "تعديل" : "Modifier"}
+                      </Button>
+                      <Button variant="destructive" size="sm" onClick={() => setDeleting(ad)}>
+                        <Trash2 className="h-4 w-4" />
+                        {lang === "ar" ? "حذف" : "Supprimer"}
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        )}
+        </TabsContent>
+
+        <TabsContent value="favorites" className="mt-4">
+          {favorites.isLoading ? (
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <Skeleton key={i} className="h-72 rounded-2xl" />
+              ))}
+            </div>
+          ) : (favorites.data ?? []).length === 0 ? (
+            <div className="rounded-2xl border border-dashed border-border py-16 text-center text-muted-foreground">
+              {lang === "ar"
+                ? "لم تضف أي إعلان إلى المفضلة بعد"
+                : "Aucune annonce dans vos favoris"}
+            </div>
+          ) : (
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {favorites.data!.map((ad) => (
+                <AdCard key={ad.id} ad={ad} />
+              ))}
+            </div>
+          )}
+        </TabsContent>
+      </Tabs>
 
       {editing && (
         <EditAdDialog

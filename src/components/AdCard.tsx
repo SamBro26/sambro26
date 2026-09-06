@@ -5,6 +5,9 @@ import { formatDzd } from "@/lib/findmedz";
 import { useLang } from "@/lib/i18n";
 import { Badge } from "@/components/ui/badge";
 import { pickName, pickTypeLabel } from "@/constants";
+import { FavoriteButton } from "@/components/FavoriteButton";
+import { ReportDialog } from "@/components/ReportDialog";
+
 
 function label(
   row: { label_ar: string; label_fr: string; label_en: string | null } | null,
@@ -94,7 +97,12 @@ export function AdCard({ ad }: { ad: AdRow }) {
             {ad.views_count}
           </span>
         </div>
+        <div className="flex items-center gap-1 border-t border-border pt-2">
+          <FavoriteButton adId={ad.id} />
+          <ReportDialog adId={ad.id} />
+        </div>
       </div>
+
     </Link>
   );
 }

@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { Heart, MapPin, MessageSquare, Phone, Lock, BadgeCheck, ChevronLeft, ChevronRight } from "lucide-react";
+import { MapPin, MessageSquare, Phone, Lock, BadgeCheck, ChevronLeft, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/AppShell";
 import { useAuth } from "@/hooks/useAuth";
@@ -12,6 +12,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { FavoriteButton } from "@/components/FavoriteButton";
+import { ReportDialog } from "@/components/ReportDialog";
 
 export const Route = createFileRoute("/ads/$adId")({
   head: () => ({
@@ -317,9 +319,10 @@ function AdDetail() {
                 {t("message")}
               </Button>
 
-              <Button variant="ghost" className="w-full text-muted-foreground">
-                <Heart className="h-4 w-4" />
-              </Button>
+              <div className="grid grid-cols-2 gap-2 border-t border-border pt-3">
+                <FavoriteButton adId={data.id} withLabel className="w-full py-2" />
+                <ReportDialog adId={data.id} withLabel className="w-full py-2" />
+              </div>
             </div>
           </CardContent>
         </Card>
