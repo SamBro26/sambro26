@@ -91,3 +91,25 @@ export async function markNotificationRead(id: string) {
   const { error } = await supabase.from("notifications").update({ is_read: true }).eq("id", id);
   if (error) throw error;
 }
+
+export type AdminReportRow = Awaited<ReturnType<typeof listReports>>[number];
+
+/** Every user report, newest first (admins only, enforced by RLS). */
+export async function listReports() {
+  const { data, error } = await supabase
+    .from("reports")
+    .select(
+      `id, reason, details, status, created_at, listing_id,
+       reporter:profiles!reports_reporter_id_fkey(id, full_name, email),
+       listing:ads!reports_listing_id_fkey(id, description, is_deleted, user_id)`,
+    )
+    .order("created_at", { ascending: false })
+    .limit(200);
+  if (error) throw error;
+  return data ?? [];
+}
+
+export async function setReportStatus(reportId: string, status: "OPEN" | "REVIEWED" | "DISMISSED") {
+  const { error } = await supabase.from("reports").update({ status }).eq("id", reportId);
+  if (error) throw error;
+}
