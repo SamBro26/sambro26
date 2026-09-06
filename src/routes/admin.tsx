@@ -2,7 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { EyeOff, Eye, Ban, Trash2, Send, ShieldCheck } from "lucide-react";
+import { EyeOff, Eye, Ban, Trash2, Send, ShieldCheck, Flag } from "lucide-react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/AppShell";
 import { useAuth } from "@/hooks/useAuth";
@@ -15,7 +15,9 @@ import {
   listAllAdsForAdmin,
   listAllUsers,
   sendNotification,
+  listReports,
   setAdDeleted,
+  setReportStatus,
   setUserBanned,
 } from "@/lib/admin";
 import { deleteUserAccount } from "@/lib/admin.functions";
@@ -92,6 +94,11 @@ const L = {
     posts: "إدارة المنشورات",
     users: "إدارة المستخدمين",
     notifs: "إرسال التنبيهات",
+    reports: "التبليغات",
+    noReports: "لا توجد تبليغات",
+    reportedBy: "المبلغ",
+    markReviewed: "تمت المراجعة",
+    dismiss: "تجاهل",
     hide: "إخفاء",
     restore: "استرجاع",
     hidden: "مخفي",
@@ -117,6 +124,11 @@ const L = {
     posts: "Modération des annonces",
     users: "Gestion des utilisateurs",
     notifs: "Envoyer des alertes",
+    reports: "Signalements",
+    noReports: "Aucun signalement",
+    reportedBy: "Signalé par",
+    markReviewed: "Traité",
+    dismiss: "Ignorer",
     hide: "Masquer",
     restore: "Restaurer",
     hidden: "Masquée",
@@ -248,11 +260,88 @@ function AdminPage() {
       </div>
 
       <Tabs defaultValue="posts">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="posts">{tx.posts}</TabsTrigger>
+          <TabsTrigger value="reports" className="gap-1.5">
+            <Flag className="h-4 w-4" />
+            {tx.reports}
+          </TabsTrigger>
           <TabsTrigger value="users">{tx.users}</TabsTrigger>
           <TabsTrigger value="notifs">{tx.notifs}</TabsTrigger>
         </TabsList>
+
+        <TabsContent value="reports" className="mt-4 space-y-3">
+          {reports.isLoading && <Skeleton className="h-32 w-full rounded-xl" />}
+          {reports.data?.length === 0 && <p className="text-muted-foreground">{tx.noReports}</p>}
+          {reports.data?.map((report) => (
+            <Card key={report.id}>
+              <CardContent className="flex flex-col gap-3 p-4 sm:flex-row sm:items-start sm:justify-between">
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="font-semibold">{report.reason}</span>
+                    <Badge variant={report.status === "OPEN" ? "destructive" : "secondary"}>
+                      {report.status}
+                    </Badge>
+                    {report.listing?.is_deleted && <Badge variant="outline">{tx.hidden}</Badge>}
+                  </div>
+                  {report.details && (
+                    <p className="mt-1 text-sm whitespace-pre-line text-muted-foreground">
+                      {report.details}
+                    </p>
+                  )}
+                  <p className="mt-1 line-clamp-2 text-xs text-muted-foreground">
+                    {report.listing?.description || "—"}
+                  </p>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    {tx.reportedBy}: {report.reporter?.full_name || report.reporter?.email || "—"} ·{" "}
+                    {new Date(report.created_at).toLocaleString(lang === "ar" ? "ar-DZ" : "fr-DZ")}
+                  </p>
+                </div>
+                <div className="flex shrink-0 flex-wrap gap-2">
+                  <Button
+                    variant={report.listing?.is_deleted ? "outline" : "destructive"}
+                    size="sm"
+                    className="gap-1.5"
+                    disabled={hideMutation.isPending}
+                    onClick={() =>
+                      hideMutation.mutate({
+                        id: report.listing_id,
+                        hidden: !report.listing?.is_deleted,
+                      })
+                    }
+                  >
+                    {report.listing?.is_deleted ? (
+                      <Eye className="h-4 w-4" />
+                    ) : (
+                      <EyeOff className="h-4 w-4" />
+                    )}
+                    {report.listing?.is_deleted ? tx.restore : tx.hide}
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    disabled={statusMutation.isPending || report.status === "REVIEWED"}
+                    onClick={() =>
+                      statusMutation.mutate({ id: report.id, status: "REVIEWED" })
+                    }
+                  >
+                    {tx.markReviewed}
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    disabled={statusMutation.isPending || report.status === "DISMISSED"}
+                    onClick={() =>
+                      statusMutation.mutate({ id: report.id, status: "DISMISSED" })
+                    }
+                  >
+                    {tx.dismiss}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </TabsContent>
 
         <TabsContent value="posts" className="mt-4 space-y-3">
           {ads.isLoading && <Skeleton className="h-32 w-full rounded-xl" />}
