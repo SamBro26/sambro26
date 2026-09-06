@@ -93,8 +93,15 @@ export function AppShell({ children }: { children: ReactNode }) {
   ];
 
   return (
-    <div dir={dir} className="flex min-h-screen flex-col bg-background">
-      <header className="sticky top-0 z-40 bg-hero-gradient text-primary-foreground shadow-float">
+    <div
+      dir={dir}
+      className="flex min-h-screen flex-col bg-background"
+      style={bannerHeight ? { paddingTop: bannerHeight } : undefined}
+    >
+      <header
+        className="sticky z-40 bg-hero-gradient text-primary-foreground shadow-float"
+        style={{ top: bannerHeight }}
+      >
         <div className="mx-auto grid w-full max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 sm:flex sm:justify-between">
           <Link to="/" className="flex min-w-0 items-center gap-2">
             <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-premium-gradient font-display text-lg font-black text-accent-foreground">
