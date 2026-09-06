@@ -5,6 +5,9 @@ import { formatDzd } from "@/lib/findmedz";
 import { useLang } from "@/lib/i18n";
 import { Badge } from "@/components/ui/badge";
 import { pickName, pickTypeLabel } from "@/constants";
+import { FavoriteButton } from "@/components/FavoriteButton";
+import { ReportDialog } from "@/components/ReportDialog";
+
 
 function label(
   row: { label_ar: string; label_fr: string; label_en: string | null } | null,
