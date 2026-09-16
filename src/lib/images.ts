@@ -58,6 +58,20 @@ export async function uploadAdImages(
   return urls;
 }
 
+/** Storage object path inside the listing-images bucket, taken from a signed URL. */
+function storagePathFromUrl(url: string): string | null {
+  const match = url.match(/listing-images\/(.+?)(\?|$)/);
+  return match ? decodeURIComponent(match[1]) : null;
+}
+
+/** Removes one image from an ad: deletes the database row and the stored file. */
+export async function deleteAdImage(imageId: string, url: string) {
+  const { error } = await supabase.from("ad_images").delete().eq("id", imageId);
+  if (error) throw error;
+  const path = storagePathFromUrl(url);
+  if (path) await supabase.storage.from("listing-images").remove([path]);
+}
+
 export function validateImageFile(file: File) {
   if (!ACCEPTED_TYPES.includes(file.type)) return "type";
   if (file.size > MAX_FILE_BYTES) return "size";
