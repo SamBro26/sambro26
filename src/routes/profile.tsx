@@ -568,6 +568,61 @@ function EditAdDialog({
               onChange={(e) => setDescription(e.target.value)}
             />
           </div>
+
+          <div className="space-y-2">
+            <Label>{lang === "ar" ? "تعديل الصور" : "Modifier les images"}</Label>
+            <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
+              {existingImages.map((image) => (
+                <div key={image.id} className="relative aspect-square overflow-hidden rounded-md border">
+                  <img src={image.url} alt="" className="h-full w-full object-cover" />
+                  <button
+                    type="button"
+                    aria-label={lang === "ar" ? "حذف الصورة" : "Supprimer l'image"}
+                    className="absolute end-1 top-1 rounded-full bg-destructive p-1 text-destructive-foreground"
+                    onClick={() => {
+                      setExistingImages((prev) => prev.filter((x) => x.id !== image.id));
+                      setRemovedImages((prev) => [...prev, { id: image.id, url: image.url }]);
+                    }}
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </div>
+              ))}
+              {newPreviews.map((preview, index) => (
+                <div
+                  key={preview.url}
+                  className="relative aspect-square overflow-hidden rounded-md border border-primary"
+                >
+                  <img src={preview.url} alt="" className="h-full w-full object-cover" />
+                  <button
+                    type="button"
+                    aria-label={lang === "ar" ? "حذف الصورة" : "Supprimer l'image"}
+                    className="absolute end-1 top-1 rounded-full bg-destructive p-1 text-destructive-foreground"
+                    onClick={() => setNewFiles((prev) => prev.filter((_, i) => i !== index))}
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </div>
+              ))}
+            </div>
+            <label className="flex cursor-pointer items-center justify-center gap-2 rounded-md border border-dashed p-3 text-sm text-muted-foreground">
+              <ImagePlus className="h-4 w-4" />
+              {lang === "ar" ? "إضافة صور جديدة" : "Ajouter des images"}
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                multiple
+                className="hidden"
+                onChange={(e) => {
+                  addFiles(e.target.files);
+                  e.target.value = "";
+                }}
+              />
+            </label>
+            <p className="text-xs text-muted-foreground">
+              {existingImages.length + newFiles.length} / {MAX_IMAGES}
+            </p>
+          </div>
         </div>
 
         <DialogFooter>
