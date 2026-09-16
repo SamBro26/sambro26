@@ -282,6 +282,26 @@ export async function countUnreadMessages(userId: string): Promise<number> {
   return count ?? 0;
 }
 
+/** Unread admin notifications / warnings addressed to the user. */
+export async function countUnreadNotifications(userId: string): Promise<number> {
+  const { count, error } = await supabase
+    .from("notifications")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", userId)
+    .eq("is_read", false);
+  if (error) throw error;
+  return count ?? 0;
+}
+
+/** Chat messages + admin notifications that the user has not read yet. */
+export async function countUnreadTotal(userId: string): Promise<number> {
+  const [messages, notifications] = await Promise.all([
+    countUnreadMessages(userId),
+    countUnreadNotifications(userId),
+  ]);
+  return messages + notifications;
+}
+
 /** Mark all messages in a conversation sent by others as read. */
 export async function markConversationRead(conversationId: string, userId: string) {
   const { error } = await supabase
