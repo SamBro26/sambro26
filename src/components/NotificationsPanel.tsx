@@ -21,7 +21,10 @@ export function NotificationsPanel() {
 
   const readMutation = useMutation({
     mutationFn: markNotificationRead,
-    onSuccess: () => void qc.invalidateQueries({ queryKey: ["my-notifications", user?.id] }),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: ["my-notifications", user?.id] });
+      void qc.invalidateQueries({ queryKey: ["unread-messages", user?.id] });
+    },
   });
 
   const items = notifications.data ?? [];
