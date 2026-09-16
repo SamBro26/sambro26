@@ -359,6 +359,45 @@ function EditAdDialog({
   );
   const [description, setDescription] = useState(ad.description ?? "");
   const [busy, setBusy] = useState(false);
+  const { user } = useAuth();
+  const [existingImages, setExistingImages] = useState(
+    [...(ad.images ?? [])].sort((a, b) => a.sort_order - b.sort_order),
+  );
+  const [removedImages, setRemovedImages] = useState<{ id: string; url: string }[]>([]);
+  const [newFiles, setNewFiles] = useState<File[]>([]);
+  const newPreviews = useMemo(
+    () => newFiles.map((file) => ({ file, url: URL.createObjectURL(file) })),
+    [newFiles],
+  );
+  useEffect(
+    () => () => newPreviews.forEach((p) => URL.revokeObjectURL(p.url)),
+    [newPreviews],
+  );
+
+  function addFiles(list: FileList | null) {
+    if (!list) return;
+    const picked: File[] = [];
+    for (const file of Array.from(list)) {
+      const problem = validateImageFile(file);
+      if (problem === "type") {
+        toast.error(lang === "ar" ? "صيغة صورة غير مدعومة" : "Format d'image non supporté");
+        continue;
+      }
+      if (problem === "size") {
+        toast.error(lang === "ar" ? "الصورة أكبر من 5 ميغا" : "Image supérieure à 5 Mo");
+        continue;
+      }
+      picked.push(file);
+    }
+    const room = MAX_IMAGES - existingImages.length - newFiles.length;
+    if (room <= 0) {
+      toast.error(
+        lang === "ar" ? `الحد الأقصى ${MAX_IMAGES} صور` : `Maximum ${MAX_IMAGES} images`,
+      );
+      return;
+    }
+    setNewFiles((prev) => [...prev, ...picked.slice(0, room)]);
+  }
 
   const wilayas = useQuery({ queryKey: ["wilayas"], queryFn: listWilayas });
   const baladiyas = useQuery({
