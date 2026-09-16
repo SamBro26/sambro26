@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { pickName, pickTypeLabel } from "@/constants";
 import { FavoriteButton } from "@/components/FavoriteButton";
 import { ReportDialog } from "@/components/ReportDialog";
+import { AdminQuickActions } from "@/components/AdminQuickActions";
 
 
 function label(
