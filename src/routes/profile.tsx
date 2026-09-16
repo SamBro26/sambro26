@@ -1,7 +1,13 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
-import { Pencil, Trash2, Eye, MapPin, ShieldCheck } from "lucide-react";
+import { Pencil, Trash2, Eye, MapPin, ShieldCheck, ImagePlus, X } from "lucide-react";
+import {
+  MAX_IMAGES,
+  deleteAdImage,
+  uploadAdImages,
+  validateImageFile,
+} from "@/lib/images";
 import { toast } from "sonner";
 import { AppShell } from "@/components/AppShell";
 import { AdCard } from "@/components/AdCard";
