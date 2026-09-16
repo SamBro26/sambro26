@@ -28,9 +28,15 @@ export async function compressImage(file: File, maxSide = 1600, quality = 0.75):
 }
 
 /** Uploads compressed images to the listing-images bucket and links them to an ad. */
-export async function uploadAdImages(adId: string, userId: string, files: File[]) {
+export async function uploadAdImages(
+  adId: string,
+  userId: string,
+  files: File[],
+  startIndex = 0,
+) {
   const urls: string[] = [];
-  for (const [index, file] of files.slice(0, MAX_IMAGES).entries()) {
+  for (const [i, file] of files.slice(0, MAX_IMAGES).entries()) {
+    const index = startIndex + i;
     const blob = await compressImage(file);
     const path = `${userId}/${adId}/${crypto.randomUUID()}.jpg`;
     const { error } = await supabase.storage
