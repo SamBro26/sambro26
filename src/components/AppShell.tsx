@@ -5,7 +5,7 @@ import { useEffect, type ReactNode } from "react";
 import { useAdMobBanner } from "@/hooks/useAdMobBanner";
 import { useAuth } from "@/hooks/useAuth";
 import { checkIsAdmin } from "@/lib/admin";
-import { countUnreadMessages } from "@/lib/findmedz";
+import { countUnreadTotal } from "@/lib/findmedz";
 import { useLang } from "@/lib/i18n";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
