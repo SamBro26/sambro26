@@ -52,21 +52,29 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   const unread = useQuery({
     queryKey: ["unread-messages", user?.id],
-    queryFn: () => countUnreadMessages(user!.id),
+    queryFn: () => countUnreadTotal(user!.id),
     enabled: !!user,
   });
 
-  // Realtime: refresh the unread badge instantly on new/updated messages.
+  // Realtime: refresh the badge instantly on new chat messages or admin notifications.
   useEffect(() => {
     if (!user) return;
+    const refresh = () => {
+      void queryClient.invalidateQueries({ queryKey: ["unread-messages", user.id] });
+      void queryClient.invalidateQueries({ queryKey: ["my-notifications", user.id] });
+    };
     const channel = supabase
       .channel(`unread-badge-${user.id}`)
+      .on("postgres_changes", { event: "*", schema: "public", table: "messages" }, refresh)
       .on(
         "postgres_changes",
-        { event: "*", schema: "public", table: "messages" },
-        () => {
-          void queryClient.invalidateQueries({ queryKey: ["unread-messages", user.id] });
+        {
+          event: "*",
+          schema: "public",
+          table: "notifications",
+          filter: `user_id=eq.${user.id}`,
         },
+        refresh,
       )
       .subscribe();
     return () => {
