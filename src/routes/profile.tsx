@@ -430,6 +430,14 @@ function EditAdDialog({
         advancePayment: advance ? Number(advance) : null,
         description,
       });
+      for (const image of removedImages) {
+        await deleteAdImage(image.id, image.url);
+      }
+      if (newFiles.length && user) {
+        await uploadAdImages(ad.id, user.id, newFiles, existingImages.length);
+      }
+      setRemovedImages([]);
+      setNewFiles([]);
       toast.success(lang === "ar" ? "تم حفظ التعديلات" : "Modifications enregistrées");
       await onSaved();
     } catch (error) {
