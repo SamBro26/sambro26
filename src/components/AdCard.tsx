@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { pickName, pickTypeLabel } from "@/constants";
 import { FavoriteButton } from "@/components/FavoriteButton";
 import { ReportDialog } from "@/components/ReportDialog";
+import { AdminQuickActions } from "@/components/AdminQuickActions";
 
 
 function label(
@@ -101,6 +102,7 @@ export function AdCard({ ad }: { ad: AdRow }) {
           <FavoriteButton adId={ad.id} />
           <ReportDialog adId={ad.id} />
         </div>
+        <AdminQuickActions adId={ad.id} ownerId={ad.owner?.id} />
       </div>
 
     </Link>
