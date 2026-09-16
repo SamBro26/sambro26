@@ -1,7 +1,13 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
-import { Pencil, Trash2, Eye, MapPin, ShieldCheck } from "lucide-react";
+import { Pencil, Trash2, Eye, MapPin, ShieldCheck, ImagePlus, X } from "lucide-react";
+import {
+  MAX_IMAGES,
+  deleteAdImage,
+  uploadAdImages,
+  validateImageFile,
+} from "@/lib/images";
 import { toast } from "sonner";
 import { AppShell } from "@/components/AppShell";
 import { AdCard } from "@/components/AdCard";
@@ -353,6 +359,45 @@ function EditAdDialog({
   );
   const [description, setDescription] = useState(ad.description ?? "");
   const [busy, setBusy] = useState(false);
+  const { user } = useAuth();
+  const [existingImages, setExistingImages] = useState(
+    [...(ad.images ?? [])].sort((a, b) => a.sort_order - b.sort_order),
+  );
+  const [removedImages, setRemovedImages] = useState<{ id: string; url: string }[]>([]);
+  const [newFiles, setNewFiles] = useState<File[]>([]);
+  const newPreviews = useMemo(
+    () => newFiles.map((file) => ({ file, url: URL.createObjectURL(file) })),
+    [newFiles],
+  );
+  useEffect(
+    () => () => newPreviews.forEach((p) => URL.revokeObjectURL(p.url)),
+    [newPreviews],
+  );
+
+  function addFiles(list: FileList | null) {
+    if (!list) return;
+    const picked: File[] = [];
+    for (const file of Array.from(list)) {
+      const problem = validateImageFile(file);
+      if (problem === "type") {
+        toast.error(lang === "ar" ? "صيغة صورة غير مدعومة" : "Format d'image non supporté");
+        continue;
+      }
+      if (problem === "size") {
+        toast.error(lang === "ar" ? "الصورة أكبر من 5 ميغا" : "Image supérieure à 5 Mo");
+        continue;
+      }
+      picked.push(file);
+    }
+    const room = MAX_IMAGES - existingImages.length - newFiles.length;
+    if (room <= 0) {
+      toast.error(
+        lang === "ar" ? `الحد الأقصى ${MAX_IMAGES} صور` : `Maximum ${MAX_IMAGES} images`,
+      );
+      return;
+    }
+    setNewFiles((prev) => [...prev, ...picked.slice(0, room)]);
+  }
 
   const wilayas = useQuery({ queryKey: ["wilayas"], queryFn: listWilayas });
   const baladiyas = useQuery({
@@ -385,6 +430,14 @@ function EditAdDialog({
         advancePayment: advance ? Number(advance) : null,
         description,
       });
+      for (const image of removedImages) {
+        await deleteAdImage(image.id, image.url);
+      }
+      if (newFiles.length && user) {
+        await uploadAdImages(ad.id, user.id, newFiles, existingImages.length);
+      }
+      setRemovedImages([]);
+      setNewFiles([]);
       toast.success(lang === "ar" ? "تم حفظ التعديلات" : "Modifications enregistrées");
       await onSaved();
     } catch (error) {
@@ -514,6 +567,61 @@ function EditAdDialog({
               value={description}
               onChange={(e) => setDescription(e.target.value)}
             />
+          </div>
+
+          <div className="space-y-2">
+            <Label>{lang === "ar" ? "تعديل الصور" : "Modifier les images"}</Label>
+            <div className="grid grid-cols-3 gap-2 sm:grid-cols-4">
+              {existingImages.map((image) => (
+                <div key={image.id} className="relative aspect-square overflow-hidden rounded-md border">
+                  <img src={image.url} alt="" className="h-full w-full object-cover" />
+                  <button
+                    type="button"
+                    aria-label={lang === "ar" ? "حذف الصورة" : "Supprimer l'image"}
+                    className="absolute end-1 top-1 rounded-full bg-destructive p-1 text-destructive-foreground"
+                    onClick={() => {
+                      setExistingImages((prev) => prev.filter((x) => x.id !== image.id));
+                      setRemovedImages((prev) => [...prev, { id: image.id, url: image.url }]);
+                    }}
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </div>
+              ))}
+              {newPreviews.map((preview, index) => (
+                <div
+                  key={preview.url}
+                  className="relative aspect-square overflow-hidden rounded-md border border-primary"
+                >
+                  <img src={preview.url} alt="" className="h-full w-full object-cover" />
+                  <button
+                    type="button"
+                    aria-label={lang === "ar" ? "حذف الصورة" : "Supprimer l'image"}
+                    className="absolute end-1 top-1 rounded-full bg-destructive p-1 text-destructive-foreground"
+                    onClick={() => setNewFiles((prev) => prev.filter((_, i) => i !== index))}
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </div>
+              ))}
+            </div>
+            <label className="flex cursor-pointer items-center justify-center gap-2 rounded-md border border-dashed p-3 text-sm text-muted-foreground">
+              <ImagePlus className="h-4 w-4" />
+              {lang === "ar" ? "إضافة صور جديدة" : "Ajouter des images"}
+              <input
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                multiple
+                className="hidden"
+                onChange={(e) => {
+                  addFiles(e.target.files);
+                  e.target.value = "";
+                }}
+              />
+            </label>
+            <p className="text-xs text-muted-foreground">
+              {existingImages.length + newFiles.length} / {MAX_IMAGES}
+            </p>
           </div>
         </div>
 

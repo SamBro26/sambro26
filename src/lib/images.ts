@@ -28,9 +28,15 @@ export async function compressImage(file: File, maxSide = 1600, quality = 0.75):
 }
 
 /** Uploads compressed images to the listing-images bucket and links them to an ad. */
-export async function uploadAdImages(adId: string, userId: string, files: File[]) {
+export async function uploadAdImages(
+  adId: string,
+  userId: string,
+  files: File[],
+  startIndex = 0,
+) {
   const urls: string[] = [];
-  for (const [index, file] of files.slice(0, MAX_IMAGES).entries()) {
+  for (const [i, file] of files.slice(0, MAX_IMAGES).entries()) {
+    const index = startIndex + i;
     const blob = await compressImage(file);
     const path = `${userId}/${adId}/${crypto.randomUUID()}.jpg`;
     const { error } = await supabase.storage
@@ -50,6 +56,20 @@ export async function uploadAdImages(adId: string, userId: string, files: File[]
     if (rowError) throw rowError;
   }
   return urls;
+}
+
+/** Storage object path inside the listing-images bucket, taken from a signed URL. */
+function storagePathFromUrl(url: string): string | null {
+  const match = url.match(/listing-images\/(.+?)(\?|$)/);
+  return match ? decodeURIComponent(match[1]) : null;
+}
+
+/** Removes one image from an ad: deletes the database row and the stored file. */
+export async function deleteAdImage(imageId: string, url: string) {
+  const { error } = await supabase.from("ad_images").delete().eq("id", imageId);
+  if (error) throw error;
+  const path = storagePathFromUrl(url);
+  if (path) await supabase.storage.from("listing-images").remove([path]);
 }
 
 export function validateImageFile(file: File) {
