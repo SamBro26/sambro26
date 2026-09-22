@@ -1,6 +1,6 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Home, MessageSquare, PlusCircle, UserRound, Languages, ShieldCheck } from "lucide-react";
+import { Home, MessageSquare, Plus, PlusCircle, UserRound, Languages, ShieldCheck } from "lucide-react";
 import { useEffect, type ReactNode } from "react";
 import { useAdMobBanner } from "@/hooks/useAdMobBanner";
 import { useAuth } from "@/hooks/useAuth";
@@ -168,30 +168,47 @@ export function AppShell({ children }: { children: ReactNode }) {
 
       <main className="mx-auto w-full max-w-6xl flex-1 px-4 pt-4 pb-24 md:pb-10">{children}</main>
 
-      <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card/95 backdrop-blur md:hidden">
-        <div className="grid grid-cols-4">
-          {[
-            ...nav.slice(0, 3),
-            { to: user ? "/profile" : "/auth", label: t("account"), icon: UserRound },
-          ].map((item) => {
-            const active = pathname === item.to;
-            return (
-              <Link
-                key={item.to}
-                to={item.to}
-                className={cn(
-                  "flex flex-col items-center gap-1 py-2.5 text-[11px] font-medium transition-colors",
-                  active ? "text-primary" : "text-muted-foreground",
-                )}
-              >
-                <span className="relative">
-                  <item.icon className={cn("h-5 w-5", active && "text-primary")} />
-                  {item.to === "/messages" && <UnreadBadge count={unreadCount} />}
-                </span>
-                {item.label}
-              </Link>
-            );
-          })}
+      <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card/95 shadow-bar backdrop-blur md:hidden">
+        <div className="mx-auto flex h-14 w-full max-w-6xl items-center gap-2 px-2">
+          {/* Prominent "post your ad" pill — leads visually in RTL, mirrored in LTR */}
+          <Link
+            to="/post"
+            className={cn(
+              "flex h-10 shrink-0 items-center justify-center gap-1.5 rounded-full bg-primary",
+              "px-3 text-[13px] font-bold text-primary-foreground shadow-card",
+              "transition-transform active:scale-[0.97]",
+            )}
+            style={{ width: "42%" }}
+          >
+            <Plus className="h-4 w-4 shrink-0" strokeWidth={2.75} />
+            <span className="truncate">{t("postAdCta")}</span>
+          </Link>
+
+          <div className="grid flex-1 grid-cols-3 items-center justify-items-center">
+            {[
+              { to: "/", label: t("home"), icon: Home },
+              { to: "/messages", label: t("messages"), icon: MessageSquare },
+              { to: user ? "/profile" : "/auth", label: t("account"), icon: UserRound },
+            ].map((item) => {
+              const active = pathname === item.to;
+              return (
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  className={cn(
+                    "flex flex-col items-center justify-center gap-0.5 py-2 text-[10px] font-medium transition-colors",
+                    active ? "text-primary" : "text-muted-foreground",
+                  )}
+                >
+                  <span className="relative">
+                    <item.icon className={cn("h-[18px] w-[18px]", active && "text-primary")} />
+                    {item.to === "/messages" && <UnreadBadge count={unreadCount} />}
+                  </span>
+                  {item.label}
+                </Link>
+              );
+            })}
+          </div>
         </div>
       </nav>
     </div>
