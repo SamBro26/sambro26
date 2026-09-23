@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Switch } from "@/components/ui/switch";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Dialog,
@@ -71,6 +72,7 @@ function AuthPage() {
   const [upPhone, setUpPhone] = useState("");
   const [upPassword, setUpPassword] = useState("");
   const [upRole, setUpRole] = useState<"INDIVIDUAL" | "AGENCY">("INDIVIDUAL");
+  const [upShowPhone, setUpShowPhone] = useState(true);
 
   async function handleForgot(e: React.FormEvent) {
     e.preventDefault();
@@ -126,7 +128,12 @@ function AuthPage() {
       password: parsed.data.password,
       options: {
         emailRedirectTo: window.location.origin,
-        data: { full_name: parsed.data.fullName, phone: parsed.data.phone, role: upRole },
+        data: {
+          full_name: parsed.data.fullName,
+          phone: parsed.data.phone,
+          role: upRole,
+          show_phone_number: upShowPhone,
+        },
       },
     });
     setBusy(false);
@@ -245,6 +252,18 @@ function AuthPage() {
                     value={upPhone}
                     onChange={(e) => setUpPhone(e.target.value)}
                     required
+                  />
+                </div>
+                <div className="flex items-center justify-between gap-3 rounded-xl border border-border p-3">
+                  <Label htmlFor="up-show-phone" className="text-sm font-normal leading-snug">
+                    {lang === "ar"
+                      ? "إظهار رقم الهاتف للعامة في المنشورات"
+                      : "Afficher mon numéro publiquement sur les annonces"}
+                  </Label>
+                  <Switch
+                    id="up-show-phone"
+                    checked={upShowPhone}
+                    onCheckedChange={setUpShowPhone}
                   />
                 </div>
                 <div className="space-y-1.5">

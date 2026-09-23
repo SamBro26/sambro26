@@ -17,7 +17,7 @@ const AD_SELECT = `
   transaction_type:transaction_types(id, key, label_ar, label_fr, label_en),
   wilaya:wilayas(id, code, name_ar, name_fr, name_en),
   baladiya:baladiyas(id, code, name_ar, name_fr, name_en),
-  owner:profiles(id, full_name, phone, role, account_tier, avatar_url),
+  owner:profiles(id, full_name, phone, show_phone_number, role, account_tier, avatar_url),
   images:ad_images(id, url, sort_order)
 `;
 

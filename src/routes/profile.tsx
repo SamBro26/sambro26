@@ -34,6 +34,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Switch } from "@/components/ui/switch";
+import { supabase } from "@/integrations/supabase/client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -108,7 +110,24 @@ function placeName(
 
 function ProfilePage() {
   const { t, lang } = useLang();
-  const { user, profile, loading } = useAuth();
+  const { user, profile, loading, refreshProfile } = useAuth();
+  const [savingPhonePref, setSavingPhonePref] = useState(false);
+
+  async function togglePhonePrivacy(next: boolean) {
+    if (!user) return;
+    setSavingPhonePref(true);
+    const { error } = await supabase
+      .from("profiles")
+      .update({ show_phone_number: next })
+      .eq("id", user.id);
+    setSavingPhonePref(false);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    await refreshProfile();
+    toast.success(lang === "ar" ? "تم حفظ التفضيل" : "Préférence enregistrée");
+  }
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
@@ -181,6 +200,28 @@ function ProfilePage() {
           )}
         </div>
       </section>
+
+      <Card className="mb-5 shadow-card">
+        <CardContent className="flex items-center justify-between gap-3 py-4">
+          <div className="min-w-0">
+            <p className="text-sm font-semibold">
+              {lang === "ar"
+                ? "إظهار رقم الهاتف للعامة في المنشورات"
+                : "Afficher mon numéro publiquement sur les annonces"}
+            </p>
+            <p className="text-xs text-muted-foreground">
+              {lang === "ar"
+                ? "عند الإيقاف، يتواصل معك المستخدمون عبر المراسلة الداخلية فقط."
+                : "Désactivé, les utilisateurs vous contactent uniquement par messagerie interne."}
+            </p>
+          </div>
+          <Switch
+            checked={profile?.show_phone_number ?? true}
+            disabled={savingPhonePref}
+            onCheckedChange={(v) => void togglePhonePrivacy(v)}
+          />
+        </CardContent>
+      </Card>
 
       <Tabs defaultValue="ads">
         <TabsList className="grid w-full grid-cols-2">

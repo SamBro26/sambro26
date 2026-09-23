@@ -1,7 +1,15 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { MapPin, MessageSquare, Phone, BadgeCheck, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  MapPin,
+  MessageSquare,
+  MessagesSquare,
+  Phone,
+  BadgeCheck,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/AppShell";
 import { useAuth } from "@/hooks/useAuth";
@@ -80,6 +88,7 @@ function AdDetail() {
   const images = [...(data.images ?? [])].sort((a, b) => a.sort_order - b.sort_order);
   const price = formatDzd(data.price, t("dzd"));
   const advance = formatDzd(data.advance_payment, t("dzd"));
+  const showPhone = Boolean(owner?.phone) && owner?.show_phone_number !== false;
 
   const scrollTo = (index: number) => {
     const el = scrollRef.current;
@@ -280,22 +289,31 @@ function AdDetail() {
             </div>
 
             <div className="space-y-2">
-              {owner?.phone ? (
+              <Button
+                className="w-full"
+                disabled={busy || owner?.id === user?.id}
+                onClick={() => void startConversation()}
+              >
+                <MessagesSquare className="h-4 w-4" />
+                {t("message")}
+              </Button>
+
+              {showPhone ? (
                 <>
-                  <Button asChild className="w-full">
-                    <a href={`tel:${owner.phone}`}>
-                      <Phone className="h-4 w-4" />
-                      {t("call")} · {owner.phone}
-                    </a>
-                  </Button>
-                  <Button asChild variant="secondary" className="w-full">
+                  <Button asChild variant="outline" className="w-full">
                     <a
-                      href={`https://wa.me/213${owner.phone.replace(/^0/, "")}`}
+                      href={`https://wa.me/213${owner!.phone!.replace(/^0/, "")}`}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
                       <MessageSquare className="h-4 w-4" />
                       {t("whatsapp")}
+                    </a>
+                  </Button>
+                  <Button asChild variant="outline" className="w-full">
+                    <a href={`tel:${owner!.phone}`}>
+                      <Phone className="h-4 w-4" />
+                      {t("call")} · {owner!.phone}
                     </a>
                   </Button>
                 </>
@@ -306,15 +324,6 @@ function AdDetail() {
                 </div>
               )}
 
-              <Button
-                variant={owner?.phone ? "outline" : "default"}
-                className="w-full"
-                disabled={busy || owner?.id === user?.id}
-                onClick={() => void startConversation()}
-              >
-                <MessageSquare className="h-4 w-4" />
-                {t("message")}
-              </Button>
 
               <div className="grid grid-cols-2 gap-2 border-t border-border pt-3">
                 <FavoriteButton adId={data.id} withLabel className="w-full py-2" />
