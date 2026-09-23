@@ -1,13 +1,13 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { MapPin, MessageSquare, Phone, Lock, BadgeCheck, ChevronLeft, ChevronRight } from "lucide-react";
+import { MapPin, MessageSquare, Phone, BadgeCheck, ChevronLeft, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/AppShell";
 import { useAuth } from "@/hooks/useAuth";
 import { useLang } from "@/lib/i18n";
 import { formatDzd, getAd, openConversation, trackAdView } from "@/lib/findmedz";
-import { contactOptionsFor, pickName, pickTypeLabel, ROLE_LABELS } from "@/constants";
+import { pickName, pickTypeLabel, ROLE_LABELS } from "@/constants";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -77,9 +77,6 @@ function AdDetail() {
 
   const data = ad.data;
   const owner = data.owner;
-  const contact = owner
-    ? contactOptionsFor(owner.role, owner.account_tier)
-    : { phone: false, whatsapp: false, message: true };
   const images = [...(data.images ?? [])].sort((a, b) => a.sort_order - b.sort_order);
   const price = formatDzd(data.price, t("dzd"));
   const advance = formatDzd(data.advance_payment, t("dzd"));
@@ -283,7 +280,7 @@ function AdDetail() {
             </div>
 
             <div className="space-y-2">
-              {contact.phone && owner?.phone ? (
+              {owner?.phone ? (
                 <>
                   <Button asChild className="w-full">
                     <a href={`tel:${owner.phone}`}>
@@ -304,13 +301,13 @@ function AdDetail() {
                 </>
               ) : (
                 <div className="flex items-start gap-2 rounded-xl border border-dashed border-border p-3 text-xs text-muted-foreground">
-                  <Lock className="mt-0.5 h-4 w-4 shrink-0" />
-                  {t("premiumOnly")}
+                  <MessageSquare className="mt-0.5 h-4 w-4 shrink-0" />
+                  {t("noPhoneHint")}
                 </div>
               )}
 
               <Button
-                variant={contact.phone ? "outline" : "default"}
+                variant={owner?.phone ? "outline" : "default"}
                 className="w-full"
                 disabled={busy || owner?.id === user?.id}
                 onClick={() => void startConversation()}
