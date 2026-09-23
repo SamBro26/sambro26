@@ -1,7 +1,15 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { MapPin, MessageSquare, Phone, BadgeCheck, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  MapPin,
+  MessageSquare,
+  MessagesSquare,
+  Phone,
+  BadgeCheck,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/AppShell";
 import { useAuth } from "@/hooks/useAuth";
@@ -80,6 +88,7 @@ function AdDetail() {
   const images = [...(data.images ?? [])].sort((a, b) => a.sort_order - b.sort_order);
   const price = formatDzd(data.price, t("dzd"));
   const advance = formatDzd(data.advance_payment, t("dzd"));
+  const showPhone = Boolean(owner?.phone) && owner?.show_phone_number !== false;
 
   const scrollTo = (index: number) => {
     const el = scrollRef.current;
