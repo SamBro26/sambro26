@@ -280,22 +280,31 @@ function AdDetail() {
             </div>
 
             <div className="space-y-2">
-              {owner?.phone ? (
+              <Button
+                className="w-full"
+                disabled={busy || owner?.id === user?.id}
+                onClick={() => void startConversation()}
+              >
+                <MessagesSquare className="h-4 w-4" />
+                {t("message")}
+              </Button>
+
+              {showPhone ? (
                 <>
-                  <Button asChild className="w-full">
-                    <a href={`tel:${owner.phone}`}>
-                      <Phone className="h-4 w-4" />
-                      {t("call")} · {owner.phone}
-                    </a>
-                  </Button>
-                  <Button asChild variant="secondary" className="w-full">
+                  <Button asChild variant="outline" className="w-full">
                     <a
-                      href={`https://wa.me/213${owner.phone.replace(/^0/, "")}`}
+                      href={`https://wa.me/213${owner!.phone!.replace(/^0/, "")}`}
                       target="_blank"
                       rel="noopener noreferrer"
                     >
                       <MessageSquare className="h-4 w-4" />
                       {t("whatsapp")}
+                    </a>
+                  </Button>
+                  <Button asChild variant="outline" className="w-full">
+                    <a href={`tel:${owner!.phone}`}>
+                      <Phone className="h-4 w-4" />
+                      {t("call")} · {owner!.phone}
                     </a>
                   </Button>
                 </>
@@ -306,15 +315,6 @@ function AdDetail() {
                 </div>
               )}
 
-              <Button
-                variant={owner?.phone ? "outline" : "default"}
-                className="w-full"
-                disabled={busy || owner?.id === user?.id}
-                onClick={() => void startConversation()}
-              >
-                <MessageSquare className="h-4 w-4" />
-                {t("message")}
-              </Button>
 
               <div className="grid grid-cols-2 gap-2 border-t border-border pt-3">
                 <FavoriteButton adId={data.id} withLabel className="w-full py-2" />
