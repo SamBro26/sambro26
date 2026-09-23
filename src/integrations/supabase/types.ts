@@ -629,6 +629,7 @@ export type Database = {
           phone_verified_at: string | null
           premium_expires_at: string | null
           role: Database["public"]["Enums"]["user_role"]
+          show_phone_number: boolean
           updated_at: string
         }
         Insert: {
@@ -643,6 +644,7 @@ export type Database = {
           phone_verified_at?: string | null
           premium_expires_at?: string | null
           role?: Database["public"]["Enums"]["user_role"]
+          show_phone_number?: boolean
           updated_at?: string
         }
         Update: {
@@ -657,6 +659,7 @@ export type Database = {
           phone_verified_at?: string | null
           premium_expires_at?: string | null
           role?: Database["public"]["Enums"]["user_role"]
+          show_phone_number?: boolean
           updated_at?: string
         }
         Relationships: []
