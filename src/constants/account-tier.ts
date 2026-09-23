@@ -41,10 +41,10 @@ export const ROLE_LABELS: Record<UserRole, { ar: string; fr: string; en: string 
 };
 
 /**
- * Contact channels available on an ad, decided by the ad owner's role + tier.
- * Agencies always expose a phone number; individuals only when premium.
+ * Contact channels available on an ad. The app is 100% free: the phone
+ * number is open to everyone; buttons are hidden only when the owner
+ * has not stored a phone number (handled where the owner data lives).
  */
-export function contactOptionsFor(role: UserRole, tier: AccountTier) {
-  const phone = role === "AGENCY" || TIER_FEATURES[tier].showsPhoneNumber;
-  return { phone, whatsapp: phone, message: true };
+export function contactOptionsFor(_role: UserRole, _tier: AccountTier) {
+  return { phone: true, whatsapp: true, message: true };
 }
