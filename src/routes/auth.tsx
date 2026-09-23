@@ -254,6 +254,18 @@ function AuthPage() {
                     required
                   />
                 </div>
+                <div className="flex items-center justify-between gap-3 rounded-xl border border-border p-3">
+                  <Label htmlFor="up-show-phone" className="text-sm font-normal leading-snug">
+                    {lang === "ar"
+                      ? "إظهار رقم الهاتف للعامة في المنشورات"
+                      : "Afficher mon numéro publiquement sur les annonces"}
+                  </Label>
+                  <Switch
+                    id="up-show-phone"
+                    checked={upShowPhone}
+                    onCheckedChange={setUpShowPhone}
+                  />
+                </div>
                 <div className="space-y-1.5">
                   <Label>{lang === "ar" ? "نوع الحساب" : "Type de compte"}</Label>
                   <Select value={upRole} onValueChange={(v) => setUpRole(v as typeof upRole)}>
