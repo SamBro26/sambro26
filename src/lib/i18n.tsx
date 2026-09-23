@@ -101,7 +101,12 @@ interface LangCtx {
   dir: "rtl" | "ltr";
 }
 
-const Ctx = createContext<LangCtx | null>(null);
+// Keep a single context instance even if this module is evaluated more than
+// once (route code-splitting can produce duplicate module copies).
+const GLOBAL_KEY = "__findmedz_lang_ctx__";
+const globalScope = globalThis as unknown as Record<string, unknown>;
+const Ctx = (globalScope[GLOBAL_KEY] as React.Context<LangCtx | null>) ??
+  (globalScope[GLOBAL_KEY] = createContext<LangCtx | null>(null));
 
 export function LangProvider({ children }: { children: ReactNode }) {
   const [lang, setLang] = useState<Lang>("ar");
@@ -130,8 +135,14 @@ export function LangProvider({ children }: { children: ReactNode }) {
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }
 
+const FALLBACK: LangCtx = {
+  lang: "ar",
+  setLang: () => {},
+  dir: "rtl",
+  t: (key) => DICT.ar[key],
+};
+
 export function useLang() {
   const ctx = useContext(Ctx);
-  if (!ctx) throw new Error("useLang must be used inside LangProvider");
-  return ctx;
+  return ctx ?? FALLBACK;
 }
