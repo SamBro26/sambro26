@@ -307,7 +307,7 @@ function AdminPage() {
                     {report.listing?.description || "—"}
                   </p>
                   <p className="mt-1 text-xs text-muted-foreground">
-                    {tx.reportedBy}: {report.reporter?.full_name || report.reporter?.email || "—"} ·{" "}
+                    {tx.reportedBy}: {report.reporter?.full_name || "—"} ·{" "}
                     {new Date(report.created_at).toLocaleString(lang === "ar" ? "ar-DZ" : "fr-DZ")}
                   </p>
                 </div>
@@ -497,7 +497,7 @@ function AdminPage() {
               <Card key={n.id}>
                 <CardContent className="p-4">
                   <p className="text-sm font-semibold">
-                    {n.recipient?.full_name || n.recipient?.email || n.user_id}
+                    {n.recipient?.full_name || n.user_id}
                   </p>
                   {n.title && <p className="text-sm font-medium">{n.title}</p>}
                   <p className="text-sm text-muted-foreground">{n.message}</p>

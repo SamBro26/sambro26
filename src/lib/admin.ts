@@ -12,7 +12,7 @@ const ADMIN_AD_SELECT = `
   property_type:property_types(id, key, label_ar, label_fr, label_en),
   wilaya:wilayas(id, code, name_ar, name_fr, name_en),
   baladiya:baladiyas(id, code, name_ar, name_fr, name_en),
-  owner:profiles(id, full_name, email, phone, is_banned)
+  owner:profiles(id, full_name, is_banned)
 `;
 
 export type AdminAdRow = Awaited<ReturnType<typeof listAllAdsForAdmin>>[number];
@@ -37,11 +37,7 @@ export async function setAdDeleted(adId: string, isDeleted: boolean) {
 export type AdminUserRow = Awaited<ReturnType<typeof listAllUsers>>[number];
 
 export async function listAllUsers() {
-  const { data, error } = await supabase
-    .from("profiles")
-    .select("id, full_name, email, phone, role, account_tier, is_banned, created_at")
-    .order("created_at", { ascending: false })
-    .limit(500);
+  const { data, error } = await supabase.rpc("admin_list_users");
   if (error) throw error;
   return data ?? [];
 }
@@ -69,7 +65,7 @@ export async function sendNotification(input: {
 export async function listAdminNotifications() {
   const { data, error } = await supabase
     .from("notifications")
-    .select("id, user_id, title, message, is_read, created_at, recipient:profiles!notifications_user_id_fkey(full_name, email)")
+    .select("id, user_id, title, message, is_read, created_at, recipient:profiles!notifications_user_id_fkey(full_name)")
     .order("created_at", { ascending: false })
     .limit(50);
   if (error) throw error;
@@ -100,7 +96,7 @@ export async function listReports() {
     .from("reports")
     .select(
       `id, reason, details, status, created_at, listing_id,
-       reporter:profiles!reports_reporter_id_fkey(id, full_name, email),
+       reporter:profiles!reports_reporter_id_fkey(id, full_name),
        listing:ads!reports_listing_id_fkey(id, description, is_deleted, user_id)`,
     )
     .order("created_at", { ascending: false })
