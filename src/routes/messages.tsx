@@ -15,6 +15,7 @@ import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { NotificationsPanel } from "@/components/NotificationsPanel";
+import { BlockGate, BlockUserButton } from "@/components/BlockUserButton";
 
 const searchSchema = z.object({ c: z.string().uuid().optional() });
 
@@ -121,6 +122,9 @@ function MessagesPage() {
   }
 
   const list = conversations.data ?? [];
+  const activeOther = list
+    .find((c) => c?.id === activeId)
+    ?.participants?.find((p) => p.user_id !== user?.id);
 
   return (
     <AppShell>
@@ -182,6 +186,12 @@ function MessagesPage() {
             </p>
           ) : (
             <>
+              {activeOther && (
+                <div className="flex items-center justify-between gap-2 border-b border-border px-4 py-2">
+                  <span className="truncate text-sm font-semibold">{activeOther.profile?.full_name || "—"}</span>
+                  <BlockUserButton otherId={activeOther.user_id} />
+                </div>
+              )}
               <div className="flex-1 space-y-2 overflow-y-auto p-4">
                 {(messages.data ?? []).map((m) => (
                   <div
@@ -198,17 +208,21 @@ function MessagesPage() {
                 ))}
                 <div ref={bottomRef} />
               </div>
-              <form onSubmit={submit} className="flex items-center gap-2 border-t border-border p-3">
-                <Input
-                  value={draft}
-                  onChange={(e) => setDraft(e.target.value)}
-                  placeholder={t("typeMessage")}
-                  maxLength={1000}
-                />
-                <Button type="submit" size="icon" aria-label={t("send")}>
-                  <Send className="h-4 w-4" />
-                </Button>
-              </form>
+              <div className="border-t border-border p-3">
+                <BlockGate otherId={activeOther?.user_id}>
+                  <form onSubmit={submit} className="flex items-center gap-2">
+                    <Input
+                      value={draft}
+                      onChange={(e) => setDraft(e.target.value)}
+                      placeholder={t("typeMessage")}
+                      maxLength={1000}
+                    />
+                    <Button type="submit" size="icon" aria-label={t("send")}>
+                      <Send className="h-4 w-4" />
+                    </Button>
+                  </form>
+                </BlockGate>
+              </div>
             </>
           )}
         </Card>

@@ -131,3 +131,19 @@ export function BlockUserButton({ otherId, className }: { otherId?: string | nul
     </AlertDialog>
   );
 }
+
+/** Hides its children and shows a notice when either side has blocked the other. */
+export function BlockGate({ otherId, children }: { otherId?: string | null; children: React.ReactNode }) {
+  const { lang } = useLang();
+  const state = useBlockState(otherId);
+  if (state.data?.iBlocked || state.data?.blockedMe) {
+    return (
+      <div className="rounded-xl border border-dashed border-destructive/40 bg-destructive/5 p-3 text-center text-xs text-destructive">
+        {state.data.iBlocked
+          ? lang === "ar" ? "لقد حظرت هذا المستخدم" : "Vous avez bloqué cet utilisateur"
+          : lang === "ar" ? "لا يمكنك التواصل مع هذا المستخدم" : "Vous ne pouvez pas contacter cet utilisateur"}
+      </div>
+    );
+  }
+  return <>{children}</>;
+}
