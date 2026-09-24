@@ -966,6 +966,44 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      admin_list_users: {
+        Args: never
+        Returns: {
+          account_tier: string
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          is_banned: boolean
+          phone: string
+          role: string
+        }[]
+      }
+      get_listing_phone: { Args: { _ad_id: string }; Returns: string }
+      get_my_profile: {
+        Args: never
+        Returns: {
+          account_tier: Database["public"]["Enums"]["account_tier"]
+          avatar_url: string | null
+          created_at: string
+          email: string | null
+          full_name: string
+          id: string
+          is_banned: boolean
+          phone: string | null
+          phone_verified_at: string | null
+          premium_expires_at: string | null
+          role: Database["public"]["Enums"]["user_role"]
+          show_phone_number: boolean
+          updated_at: string
+        }[]
+        SetofOptions: {
+          from: "*"
+          to: "profiles"
+          isOneToOne: false
+          isSetofReturn: true
+        }
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

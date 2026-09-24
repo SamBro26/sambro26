@@ -17,7 +17,7 @@ const AD_SELECT = `
   transaction_type:transaction_types(id, key, label_ar, label_fr, label_en),
   wilaya:wilayas(id, code, name_ar, name_fr, name_en),
   baladiya:baladiyas(id, code, name_ar, name_fr, name_en),
-  owner:profiles(id, full_name, phone, show_phone_number, role, account_tier, avatar_url),
+  owner:profiles(id, full_name, show_phone_number, role, account_tier, avatar_url),
   images:ad_images(id, url, sort_order)
 `;
 
@@ -53,7 +53,14 @@ export async function getAd(id: string) {
     .eq("is_deleted", false)
     .maybeSingle();
   if (error) throw error;
-  return data;
+  if (!data) return data;
+  let phone: string | null = null;
+  const { data: auth } = await supabase.auth.getSession();
+  if (auth.session) {
+    const { data: p } = await supabase.rpc("get_listing_phone", { _ad_id: id });
+    phone = (p as string | null) ?? null;
+  }
+  return { ...data, owner: data.owner ? { ...data.owner, phone } : data.owner };
 }
 
 const VIEWED_KEY = "findmedz_viewed_ads";
