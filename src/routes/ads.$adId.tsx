@@ -106,10 +106,11 @@ function AdDetail() {
       void navigate({ to: "/auth" });
       return;
     }
-    if (!owner || owner.id === user.id) return;
+    if (!owner?.id || owner.id === user.id) return;
+    const ownerId = owner.id;
     setBusy(true);
     try {
-      const conversationId = await openConversation(data.id, user.id, owner.id);
+      const conversationId = await openConversation(data.id, user.id, ownerId);
       void navigate({ to: "/messages", search: { c: conversationId } });
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "Error");
@@ -284,7 +285,7 @@ function AdDetail() {
                 <p className="truncate font-semibold">{owner?.full_name || "—"}</p>
                 <p className="flex items-center gap-1 text-xs text-muted-foreground">
                   {owner?.role === "AGENCY" && <BadgeCheck className="h-3.5 w-3.5 text-primary" />}
-                  {owner && ROLE_LABELS[owner.role][lang === "ar" ? "ar" : "fr"]}
+                  {owner?.role && ROLE_LABELS[owner.role][lang === "ar" ? "ar" : "fr"]}
                 </p>
               </div>
             </div>
