@@ -22,6 +22,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { FavoriteButton } from "@/components/FavoriteButton";
 import { ReportDialog } from "@/components/ReportDialog";
+import { BlockGate, BlockUserButton } from "@/components/BlockUserButton";
 
 export const Route = createFileRoute("/ads/$adId")({
   head: () => ({
@@ -289,6 +290,7 @@ function AdDetail() {
             </div>
 
             <div className="space-y-2">
+              <BlockGate otherId={owner?.id}>
               <Button
                 className="w-full"
                 disabled={busy || owner?.id === user?.id}
@@ -323,11 +325,14 @@ function AdDetail() {
                   {t("noPhoneHint")}
                 </div>
               )}
-
+              </BlockGate>
 
               <div className="grid grid-cols-2 gap-2 border-t border-border pt-3">
                 <FavoriteButton adId={data.id} withLabel className="w-full py-2" />
                 <ReportDialog adId={data.id} withLabel className="w-full py-2" />
+              </div>
+              <div className="flex justify-center">
+                <BlockUserButton otherId={owner?.id} />
               </div>
             </div>
           </CardContent>
