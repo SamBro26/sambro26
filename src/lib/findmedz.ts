@@ -17,7 +17,7 @@ const AD_SELECT = `
   transaction_type:transaction_types(id, key, label_ar, label_fr, label_en),
   wilaya:wilayas(id, code, name_ar, name_fr, name_en),
   baladiya:baladiyas(id, code, name_ar, name_fr, name_en),
-  owner:profiles(id, full_name, show_phone_number, role, account_tier, avatar_url),
+  owner:public_profiles(id, full_name, show_phone_number, role, account_tier, avatar_url),
   images:ad_images(id, url, sort_order)
 `;
 
@@ -244,7 +244,7 @@ export async function listConversations(userId: string) {
        conversation:conversations(
          id, created_at,
          ad:ads(id, description, price, property_type:property_types(label_ar, label_fr, label_en)),
-         participants:conversation_participants(user_id, profile:profiles(id, full_name, avatar_url, role)),
+         participants:conversation_participants(user_id, profile:public_profiles(id, full_name, avatar_url, role)),
          messages(id, content, created_at, sender_id, is_read)
        )`,
     )
