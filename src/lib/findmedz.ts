@@ -130,32 +130,91 @@ export async function softDeleteAd(adId: string) {
   if (error) throw error;
 }
 
+/**
+ * Reference data (wilayas, baladiyas, property/transaction types) almost never
+ * changes, so it is cached in localStorage: the first visit fetches once from
+ * the backend, every later visit loads instantly with zero API requests.
+ * Bump CACHE_VERSION to invalidate all cached reference data after a reseed.
+ */
+const CACHE_VERSION = "v1";
+const cacheKey = (name: string) => `findmedz_ref_${CACHE_VERSION}_${name}`;
+
+function readCache<T>(name: string): T | null {
+  try {
+    const raw = localStorage.getItem(cacheKey(name));
+    return raw ? (JSON.parse(raw) as T) : null;
+  } catch {
+    return null;
+  }
+}
+
+function writeCache(name: string, value: unknown): void {
+  try {
+    localStorage.setItem(cacheKey(name), JSON.stringify(value));
+  } catch {
+    // Quota exceeded or storage unavailable — caching is best-effort.
+  }
+}
+
 export async function listWilayas() {
+  const cached = readCache<Awaited<ReturnType<typeof fetchWilayas>>>("wilayas");
+  if (cached) return cached;
+  return fetchWilayas();
+}
+
+async function fetchWilayas() {
   const { data, error } = await supabase.from("wilayas").select("*").order("code");
   if (error) throw error;
-  return data ?? [];
+  const rows = data ?? [];
+  if (rows.length > 0) writeCache("wilayas", rows);
+  return rows;
 }
 
 export async function listBaladiyas(wilayaId: number) {
+  const key = `baladiyas_${wilayaId}`;
+  const cached = readCache<Awaited<ReturnType<typeof fetchBaladiyas>>>(key);
+  if (cached) return cached;
+  return fetchBaladiyas(wilayaId);
+}
+
+async function fetchBaladiyas(wilayaId: number) {
   const { data, error } = await supabase
     .from("baladiyas")
     .select("*")
     .eq("wilaya_id", wilayaId)
     .order("code");
   if (error) throw error;
-  return data ?? [];
+  const rows = data ?? [];
+  if (rows.length > 0) writeCache(`baladiyas_${wilayaId}`, rows);
+  return rows;
 }
 
 export async function listPropertyTypes() {
+  const cached = readCache<Awaited<ReturnType<typeof fetchPropertyTypes>>>("property_types");
+  if (cached) return cached;
+  return fetchPropertyTypes();
+}
+
+async function fetchPropertyTypes() {
   const { data, error } = await supabase.from("property_types").select("*").order("sort_order");
   if (error) throw error;
-  return data ?? [];
+  const rows = data ?? [];
+  if (rows.length > 0) writeCache("property_types", rows);
+  return rows;
 }
 
 export async function listTransactionTypes() {
+  const cached = readCache<Awaited<ReturnType<typeof fetchTransactionTypes>>>("transaction_types");
+  if (cached) return cached;
+  return fetchTransactionTypes();
+}
+
+async function fetchTransactionTypes() {
   const { data, error } = await supabase.from("transaction_types").select("*").order("sort_order");
   if (error) throw error;
-  return data ?? [];
+  const rows = data ?? [];
+  if (rows.length > 0) writeCache("transaction_types", rows);
+  return rows;
 }
 
 export interface NewAdInput {
