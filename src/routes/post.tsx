@@ -71,8 +71,16 @@ const STEP_TITLES = {
 
 function PostAd() {
   const { t, lang } = useLang();
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
   const navigate = useNavigate();
+
+  // Auth guard: guests are sent to login before seeing any wizard step,
+  // and come back here automatically after signing in.
+  useEffect(() => {
+    if (loading || user) return;
+    toast.error("يرجى تسجيل الدخول أو إنشاء حساب أولاً لكي تتمكن من إضافة إعلان");
+    void navigate({ to: "/auth", search: { redirect: "/post" }, replace: true });
+  }, [loading, user, navigate]);
 
   const [step, setStep] = useState(0);
   const [adKind, setAdKind] = useState<AdKind>("SUPPLY");
