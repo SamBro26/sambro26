@@ -61,6 +61,7 @@ function AuthPage() {
   const { t, lang } = useLang();
   const { user, profile } = useAuth();
   const navigate = useNavigate();
+  const { redirect: redirectTo } = Route.useSearch();
   const [busy, setBusy] = useState(false);
 
   const [inEmail, setInEmail] = useState("");
@@ -109,7 +110,8 @@ function AuthPage() {
       return;
     }
     toast.success("مرحبا بك / Bienvenue");
-    void navigate({ to: "/" });
+    // Return the user to where they were headed (e.g. the ad form).
+    void navigate({ to: redirectTo ?? "/" });
   }
 
   async function handleSignUp(e: React.FormEvent) {
