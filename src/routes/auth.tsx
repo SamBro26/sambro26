@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
 import { AppShell } from "@/components/AppShell";
@@ -30,6 +30,8 @@ import {
 import { ROLE_LABELS, TIER_LABELS } from "@/constants";
 
 export const Route = createFileRoute("/auth")({
+  validateSearch: (search: Record<string, unknown>): { redirect?: string } =>
+    typeof search.redirect === "string" ? { redirect: search.redirect } : {},
   head: () => ({
     meta: [
       { title: "Connexion — FindMeDZ دبرلي" },
@@ -58,7 +60,14 @@ function AuthPage() {
   const { t, lang } = useLang();
   const { user, profile } = useAuth();
   const navigate = useNavigate();
+  const { redirect: redirectTo } = Route.useSearch();
   const [busy, setBusy] = useState(false);
+
+  // Already signed in (or just confirmed email) with a pending destination?
+  // Send them straight back to it — e.g. the ad creation form.
+  useEffect(() => {
+    if (user && redirectTo) void navigate({ to: redirectTo, replace: true });
+  }, [user, redirectTo, navigate]);
 
   const [inEmail, setInEmail] = useState("");
   const [inPassword, setInPassword] = useState("");
@@ -106,7 +115,8 @@ function AuthPage() {
       return;
     }
     toast.success("مرحبا بك / Bienvenue");
-    void navigate({ to: "/" });
+    // Return the user to where they were headed (e.g. the ad form).
+    void navigate({ to: redirectTo ?? "/" });
   }
 
   async function handleSignUp(e: React.FormEvent) {

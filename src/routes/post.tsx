@@ -228,6 +228,9 @@ function PostAd() {
   const Forward = lang === "ar" ? ArrowLeft : ArrowRight;
   const Backward = lang === "ar" ? ArrowRight : ArrowLeft;
 
+  // Guests never see the wizard — the guard effect above redirects them.
+  if (!user) return null;
+
   return (
     <AppShell>
       <div className="mx-auto max-w-2xl">
