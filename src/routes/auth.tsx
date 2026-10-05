@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
 import { AppShell } from "@/components/AppShell";
@@ -63,6 +63,12 @@ function AuthPage() {
   const navigate = useNavigate();
   const { redirect: redirectTo } = Route.useSearch();
   const [busy, setBusy] = useState(false);
+
+  // Already signed in (or just confirmed email) with a pending destination?
+  // Send them straight back to it — e.g. the ad creation form.
+  useEffect(() => {
+    if (user && redirectTo) void navigate({ to: redirectTo, replace: true });
+  }, [user, redirectTo, navigate]);
 
   const [inEmail, setInEmail] = useState("");
   const [inPassword, setInPassword] = useState("");
