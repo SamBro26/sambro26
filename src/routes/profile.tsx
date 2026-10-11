@@ -66,13 +66,13 @@ import {
 export const Route = createFileRoute("/profile")({
   head: () => ({
     meta: [
-      { title: "Mon profil & mes annonces — FindMeDZ دبرلي" },
+      { title: "Mon profil & mes annonces — سكنة وحانوت" },
       {
         name: "description",
         content:
-          "Gérez votre profil FindMeDZ : consultez, modifiez ou supprimez vos annonces immobilières publiées en Algérie.",
+          "Gérez votre profil سكنة وحانوت : consultez, modifiez ou supprimez vos annonces immobilières publiées en Algérie.",
       },
-      { property: "og:title", content: "Mon profil & mes annonces — FindMeDZ دبرلي" },
+      { property: "og:title", content: "Mon profil & mes annonces — سكنة وحانوت" },
       {
         property: "og:description",
         content: "Tableau de bord personnel pour gérer vos annonces immobilières.",
@@ -267,7 +267,7 @@ function ProfilePage() {
                         />
                       ) : (
                         <div className="grid h-full w-full place-items-center bg-hero-gradient font-display text-3xl font-black text-primary-foreground/70">
-                          دبرلي
+                          سكنة وحانوت
                         </div>
                       )}
                       <Badge className="absolute top-2 ltr:left-2 rtl:right-2 bg-card text-card-foreground">

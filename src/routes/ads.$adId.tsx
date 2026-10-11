@@ -27,13 +27,13 @@ import { BlockGate, BlockUserButton } from "@/components/BlockUserButton";
 export const Route = createFileRoute("/ads/$adId")({
   head: () => ({
     meta: [
-      { title: "Annonce — FindMeDZ دبرلي" },
+      { title: "Annonce — سكنة وحانوت" },
       {
         name: "description",
         content: "Détails de l'annonce immobilière : localisation, prix et contact du vendeur.",
       },
-      { property: "og:title", content: "Annonce — FindMeDZ دبرلي" },
-      { property: "og:description", content: "Détails de l'annonce immobilière sur FindMeDZ." },
+      { property: "og:title", content: "Annonce — سكنة وحانوت" },
+      { property: "og:description", content: "Détails de l'annonce immobilière sur سكنة وحانوت." },
     ],
   }),
   component: AdDetail,
@@ -149,7 +149,7 @@ function AdDetail() {
                 ))
               ) : (
                 <div className="grid aspect-[16/10] w-full place-items-center bg-hero-gradient font-display text-4xl font-black text-primary-foreground/70">
-                  دبرلي
+                  سكنة وحانوت
                 </div>
               )}
             </div>

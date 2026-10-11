@@ -40,14 +40,14 @@ import { MAX_IMAGES, uploadAdImages, validateImageFile } from "@/lib/images";
 export const Route = createFileRoute("/post")({
   head: () => ({
     meta: [
-      { title: "Publier une annonce — FindMeDZ دبرلي" },
+      { title: "Publier une annonce — سكنة وحانوت" },
       {
         name: "description",
         content:
           "Publiez une offre ou une demande immobilière en quelques étapes : type de bien, localisation, prix et description.",
       },
-      { property: "og:title", content: "Publier une annonce — FindMeDZ دبرلي" },
-      { property: "og:description", content: "Créez votre annonce immobilière sur FindMeDZ." },
+      { property: "og:title", content: "Publier une annonce — سكنة وحانوت" },
+      { property: "og:description", content: "Créez votre annonce immobilière sur سكنة وحانوت." },
     ],
   }),
   component: PostAd,

@@ -53,7 +53,7 @@ export function AdCard({ ad }: { ad: AdRow }) {
           />
         ) : (
           <div className="grid h-full w-full place-items-center bg-hero-gradient font-display text-3xl font-black text-primary-foreground/70">
-            دبرلي
+            سكنة وحانوت
           </div>
         )}
         <div className="absolute top-2 flex gap-1.5 ltr:left-2 rtl:right-2">

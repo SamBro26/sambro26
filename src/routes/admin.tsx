@@ -51,14 +51,14 @@ import {
 export const Route = createFileRoute("/admin")({
   head: () => ({
     meta: [
-      { title: "Tableau de bord admin — FindMeDZ دبرلي" },
+      { title: "Tableau de bord admin — سكنة وحانوت" },
       {
         name: "description",
         content:
-          "Espace d'administration FindMeDZ : modération des annonces, gestion des utilisateurs et envoi d'avertissements.",
+          "Espace d'administration سكنة وحانوت : modération des annonces, gestion des utilisateurs et envoi d'avertissements.",
       },
-      { property: "og:title", content: "Tableau de bord admin — FindMeDZ دبرلي" },
-      { property: "og:description", content: "Modération et gestion de la plateforme FindMeDZ." },
+      { property: "og:title", content: "Tableau de bord admin — سكنة وحانوت" },
+      { property: "og:description", content: "Modération et gestion de la plateforme سكنة وحانوت." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],

@@ -80,14 +80,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "FindMeDZ دبرلي — Immobilier en Algérie" },
+      { title: "سكنة وحانوت — Immobilier en Algérie" },
       {
         name: "description",
         content:
-          "FindMeDZ (دبرلي) : annonces immobilières en Algérie — offres et demandes, filtrées par wilaya et baladiya.",
+          "سكنة وحانوت (سكنة وحانوت) : annonces immobilières en Algérie — offres et demandes, filtrées par wilaya et baladiya.",
       },
-      { name: "author", content: "FindMeDZ" },
-      { property: "og:title", content: "FindMeDZ دبرلي — Immobilier en Algérie" },
+      { name: "author", content: "سكنة وحانوت" },
+      { property: "og:title", content: "سكنة وحانوت — Immobilier en Algérie" },
       {
         property: "og:description",
         content: "Offres et demandes immobilières dans les 58 wilayas d'Algérie.",

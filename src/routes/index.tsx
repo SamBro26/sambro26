@@ -13,13 +13,13 @@ import type { AdKind } from "@/constants";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "FindMeDZ دبرلي — Annonces immobilières en Algérie" },
+      { title: "سكنة وحانوت — Annonces immobilières en Algérie" },
       {
         name: "description",
         content:
           "Parcourez les offres et demandes immobilières en Algérie : appartements, maisons, locaux et terrains, filtrés par wilaya et baladiya.",
       },
-      { property: "og:title", content: "FindMeDZ دبرلي — Annonces immobilières en Algérie" },
+      { property: "og:title", content: "سكنة وحانوت — Annonces immobilières en Algérie" },
       {
         property: "og:description",
         content: "Offres et demandes immobilières dans les 58 wilayas d'Algérie.",
@@ -43,7 +43,7 @@ function Index() {
     <AppShell>
       <section className="mb-4 overflow-hidden rounded-3xl bg-hero-gradient px-5 py-7 text-primary-foreground shadow-float">
         <h1 className="font-display text-2xl leading-tight font-black sm:text-3xl">
-          FindMeDZ <span className="opacity-80">دبرلي</span>
+          سكنة وحانوت <span className="opacity-80">سكنة وحانوت</span>
         </h1>
         <p className="mt-2 max-w-lg text-sm opacity-90">{t("tagline")}</p>
       </section>
