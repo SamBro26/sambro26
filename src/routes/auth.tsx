@@ -21,11 +21,6 @@ import {
 } from "@/components/ui/dialog";
 import { Loader2, MailCheck } from "lucide-react";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
 } from "@/components/ui/select";
 import { ROLE_LABELS, TIER_LABELS } from "@/constants";
 
@@ -80,7 +75,6 @@ function AuthPage() {
   const [upEmail, setUpEmail] = useState("");
   const [upPhone, setUpPhone] = useState("");
   const [upPassword, setUpPassword] = useState("");
-  const [upRole, setUpRole] = useState<"INDIVIDUAL" | "AGENCY">("INDIVIDUAL");
   const [upShowPhone, setUpShowPhone] = useState(true);
 
   async function handleForgot(e: React.FormEvent) {
