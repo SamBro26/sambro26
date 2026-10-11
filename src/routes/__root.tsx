@@ -77,7 +77,10 @@ const ErrorComponent = lazy(async () => {
       </div>
     </div>
   );
-}
+  }
+
+  return { default: ErrorInner };
+});
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   head: () => ({
