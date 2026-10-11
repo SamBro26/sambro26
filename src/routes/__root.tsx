@@ -41,7 +41,7 @@ function NotFoundComponent() {
 // type (which after the recent @tanstack/react-router update requires a lazy
 // component with an optional preload method).
 const ErrorComponent = lazy(async () => {
-  function ErrorInner({ error, reset }: { error: Error; reset: () => void }) {
+  function ErrorInner({ error, reset }: { error: unknown; reset: () => void }) {
   console.error(error);
   const router = useRouter();
   useEffect(() => {
