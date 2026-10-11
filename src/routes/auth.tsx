@@ -21,11 +21,6 @@ import {
 } from "@/components/ui/dialog";
 import { Loader2, MailCheck } from "lucide-react";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
 } from "@/components/ui/select";
 import { ROLE_LABELS, TIER_LABELS } from "@/constants";
 
@@ -80,7 +75,6 @@ function AuthPage() {
   const [upEmail, setUpEmail] = useState("");
   const [upPhone, setUpPhone] = useState("");
   const [upPassword, setUpPassword] = useState("");
-  const [upRole, setUpRole] = useState<"INDIVIDUAL" | "AGENCY">("INDIVIDUAL");
   const [upShowPhone, setUpShowPhone] = useState(true);
 
   async function handleForgot(e: React.FormEvent) {
@@ -141,7 +135,6 @@ function AuthPage() {
         data: {
           full_name: parsed.data.fullName,
           phone: parsed.data.phone,
-          role: upRole,
           show_phone_number: upShowPhone,
         },
       },
@@ -275,22 +268,6 @@ function AuthPage() {
                     checked={upShowPhone}
                     onCheckedChange={setUpShowPhone}
                   />
-                </div>
-                <div className="space-y-1.5">
-                  <Label>{lang === "ar" ? "نوع الحساب" : "Type de compte"}</Label>
-                  <Select value={upRole} onValueChange={(v) => setUpRole(v as typeof upRole)}>
-                    <SelectTrigger>
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="INDIVIDUAL">
-                        {ROLE_LABELS.INDIVIDUAL[lang === "ar" ? "ar" : "fr"]}
-                      </SelectItem>
-                      <SelectItem value="AGENCY">
-                        {ROLE_LABELS.AGENCY[lang === "ar" ? "ar" : "fr"]}
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
                 </div>
                 <div className="space-y-1.5">
                   <Label htmlFor="up-pass">{lang === "ar" ? "كلمة السر" : "Mot de passe"}</Label>
