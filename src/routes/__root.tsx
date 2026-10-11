@@ -84,7 +84,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       {
         name: "description",
         content:
-          "سكنة وحانوت (سكنة وحانوت) : annonces immobilières en Algérie — offres et demandes, filtrées par wilaya et baladiya.",
+          "سكنة وحانوت : annonces immobilières en Algérie — offres et demandes, filtrées par wilaya et baladiya.",
       },
       { name: "author", content: "سكنة وحانوت" },
       { property: "og:title", content: "سكنة وحانوت — Immobilier en Algérie" },

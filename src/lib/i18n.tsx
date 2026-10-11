@@ -4,7 +4,7 @@ import type { Lang } from "@/constants";
 const DICT = {
   ar: {
     appName: "سكنة وحانوت",
-    tagline: "سوق العقارات الجزائري — عرض وطلب في مكان واحد",
+    tagline: "سوق العقارات الجزائري – عرض وطلب في مكان واحد",
     supply: "العرض",
     demand: "الطلب",
     home: "الرئيسية",

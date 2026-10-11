@@ -113,13 +113,13 @@ export function AppShell({ children }: { children: ReactNode }) {
         <div className="mx-auto grid w-full max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 sm:flex sm:justify-between">
           <Link to="/" className="flex min-w-0 items-center gap-2">
             <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-premium-gradient font-display text-lg font-black text-accent-foreground">
-              د
+              س
             </span>
             <span className="min-w-0">
               <span className="block truncate font-display text-lg leading-tight font-extrabold">
-                FindMeDZ
+                سكنة وحانوت
               </span>
-              <span className="block truncate text-xs opacity-80">دبرلي</span>
+              <span className="block truncate text-xs opacity-80">Sakna wa Hanout</span>
             </span>
           </Link>
 
