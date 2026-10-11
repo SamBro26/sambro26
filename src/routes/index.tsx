@@ -43,7 +43,6 @@ function Index() {
     <AppShell>
       <section className="mb-4 overflow-hidden rounded-3xl bg-hero-gradient px-5 py-7 text-primary-foreground shadow-float">
         <h1 className="font-display text-2xl leading-tight font-black sm:text-3xl">
-        <h1 className="font-display text-2xl leading-tight font-black sm:text-3xl">
           سكنة وحانوت
         </h1>
         <p className="mt-2 max-w-lg text-sm opacity-90">سوق العقارات الجزائري – عرض وطلب في مكان واحد</p>
