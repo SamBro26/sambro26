@@ -34,13 +34,13 @@ export const Route = createFileRoute("/auth")({
     typeof search.redirect === "string" ? { redirect: search.redirect } : {},
   head: () => ({
     meta: [
-      { title: "Connexion — FindMeDZ دبرلي" },
+      { title: "Connexion — سكنة وحانوت" },
       {
         name: "description",
-        content: "Connectez-vous ou créez un compte particulier ou agence sur FindMeDZ.",
+        content: "Connectez-vous ou créez un compte particulier ou agence sur سكنة وحانوت.",
       },
-      { property: "og:title", content: "Connexion — FindMeDZ دبرلي" },
-      { property: "og:description", content: "Accédez à vos annonces et messages FindMeDZ." },
+      { property: "og:title", content: "Connexion — سكنة وحانوت" },
+      { property: "og:description", content: "Accédez à vos annonces et messages سكنة وحانوت." },
     ],
   }),
   component: AuthPage,
@@ -181,7 +181,7 @@ function AuthPage() {
     <AppShell>
       <Card className="mx-auto max-w-md shadow-card">
         <CardHeader>
-          <CardTitle className="font-display">FindMeDZ دبرلي</CardTitle>
+          <CardTitle className="font-display">سكنة وحانوت</CardTitle>
         </CardHeader>
         <CardContent>
           <Tabs defaultValue="in">

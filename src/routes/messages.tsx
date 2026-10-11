@@ -23,13 +23,13 @@ export const Route = createFileRoute("/messages")({
   validateSearch: searchSchema,
   head: () => ({
     meta: [
-      { title: "Messages — FindMeDZ دبرلي" },
+      { title: "Messages — سكنة وحانوت" },
       {
         name: "description",
-        content: "Discutez directement avec les vendeurs, acheteurs et agences sur FindMeDZ.",
+        content: "Discutez directement avec les vendeurs, acheteurs et agences sur سكنة وحانوت.",
       },
-      { property: "og:title", content: "Messages — FindMeDZ دبرلي" },
-      { property: "og:description", content: "Vos conversations FindMeDZ." },
+      { property: "og:title", content: "Messages — سكنة وحانوت" },
+      { property: "og:description", content: "Vos conversations سكنة وحانوت." },
     ],
   }),
   component: MessagesPage,

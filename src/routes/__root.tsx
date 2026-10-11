@@ -7,7 +7,7 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { lazy, useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "@/lib/lovable-error-reporting";
@@ -37,7 +37,11 @@ function NotFoundComponent() {
   );
 }
 
-function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
+// Wrap in React.lazy so the component matches the router's ErrorRouteComponent
+// type (which after the recent @tanstack/react-router update requires a lazy
+// component with an optional preload method).
+const ErrorComponent = lazy(async () => {
+  function ErrorInner({ error, reset }: { error: unknown; reset: () => void }) {
   console.error(error);
   const router = useRouter();
   useEffect(() => {
@@ -73,21 +77,24 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
       </div>
     </div>
   );
-}
+  }
+
+  return { default: ErrorInner };
+});
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
   head: () => ({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "FindMeDZ دبرلي — Immobilier en Algérie" },
+      { title: "سكنة وحانوت — Immobilier en Algérie" },
       {
         name: "description",
         content:
-          "FindMeDZ (دبرلي) : annonces immobilières en Algérie — offres et demandes, filtrées par wilaya et baladiya.",
+          "سكنة وحانوت : annonces immobilières en Algérie — offres et demandes, filtrées par wilaya et baladiya.",
       },
-      { name: "author", content: "FindMeDZ" },
-      { property: "og:title", content: "FindMeDZ دبرلي — Immobilier en Algérie" },
+      { name: "author", content: "سكنة وحانوت" },
+      { property: "og:title", content: "سكنة وحانوت — Immobilier en Algérie" },
       {
         property: "og:description",
         content: "Offres et demandes immobilières dans les 58 wilayas d'Algérie.",

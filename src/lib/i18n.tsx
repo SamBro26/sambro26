@@ -3,8 +3,8 @@ import type { Lang } from "@/constants";
 
 const DICT = {
   ar: {
-    appName: "دبرلي",
-    tagline: "سوق العقارات الجزائري — عرض وطلب في مكان واحد",
+    appName: "سكنة وحانوت",
+    tagline: "سوق العقارات الجزائري – عرض وطلب في مكان واحد",
     supply: "العرض",
     demand: "الطلب",
     home: "الرئيسية",
@@ -47,7 +47,7 @@ const DICT = {
     dzd: "دج",
   },
   fr: {
-    appName: "FindMeDZ",
+    appName: "سكنة وحانوت",
     tagline: "Le marché immobilier algérien — offres et demandes réunies",
     supply: "Offres",
     demand: "Demandes",

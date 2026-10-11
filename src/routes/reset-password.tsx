@@ -13,13 +13,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 export const Route = createFileRoute("/reset-password")({
   head: () => ({
     meta: [
-      { title: "Réinitialiser le mot de passe — FindMeDZ دبرلي" },
+      { title: "Réinitialiser le mot de passe — سكنة وحانوت" },
       {
         name: "description",
-        content: "Définissez un nouveau mot de passe pour votre compte FindMeDZ.",
+        content: "Définissez un nouveau mot de passe pour votre compte سكنة وحانوت.",
       },
-      { property: "og:title", content: "Nouveau mot de passe — FindMeDZ دبرلي" },
-      { property: "og:description", content: "Définissez un nouveau mot de passe FindMeDZ." },
+      { property: "og:title", content: "Nouveau mot de passe — سكنة وحانوت" },
+      { property: "og:description", content: "Définissez un nouveau mot de passe سكنة وحانوت." },
     ],
   }),
   component: ResetPasswordPage,
