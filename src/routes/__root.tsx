@@ -152,6 +152,11 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
+  // Initialize AdMob once at the app root (no-op on the web).
+  useEffect(() => {
+    void import("@/lib/admob").then(({ initAdMob }) => initAdMob());
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <LangProvider>
