@@ -11,6 +11,7 @@ import {
 import { toast } from "sonner";
 import { AppShell } from "@/components/AppShell";
 import { AdCard } from "@/components/AdCard";
+import { AdPlaceholder } from "@/components/AdPlaceholder";
 import { useAuth } from "@/hooks/useAuth";
 import { useLang } from "@/lib/i18n";
 import {
