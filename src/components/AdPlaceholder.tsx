@@ -1,4 +1,4 @@
-import { pickName, pickTypeLabel, type AdKind, type Lang } from "@/constants";
+import { pickName, pickTypeLabel, type Lang } from "@/constants";
 import { useLang, type DictKey } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
@@ -6,7 +6,7 @@ type Labelled = { label_ar: string; label_fr: string; label_en: string | null } 
 type Named = { name_ar: string; name_fr: string; name_en: string | null } | null;
 
 export interface PlaceholderAd {
-  ad_kind: AdKind;
+  ad_kind: string;
   property_type: Labelled;
   transaction_type: (Labelled & { key: string | null }) | null;
   wilaya: Named;
