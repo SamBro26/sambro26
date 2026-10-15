@@ -11,6 +11,7 @@ import {
 import { toast } from "sonner";
 import { AppShell } from "@/components/AppShell";
 import { AdCard } from "@/components/AdCard";
+import { AdPlaceholder } from "@/components/AdPlaceholder";
 import { useAuth } from "@/hooks/useAuth";
 import { useLang } from "@/lib/i18n";
 import {
@@ -266,9 +267,7 @@ function ProfilePage() {
                           className="h-full w-full object-cover"
                         />
                       ) : (
-                        <div className="grid h-full w-full place-items-center bg-hero-gradient font-display text-3xl font-black text-primary-foreground/70">
-                          سكنة وحانوت
-                        </div>
+                        <AdPlaceholder ad={ad} className="h-full w-full" />
                       )}
                       <Badge className="absolute top-2 ltr:left-2 rtl:right-2 bg-card text-card-foreground">
                         {status ? status[lang === "ar" ? "ar" : "fr"] : ad.status}

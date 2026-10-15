@@ -5,6 +5,7 @@ import { formatDzd } from "@/lib/findmedz";
 import { useLang } from "@/lib/i18n";
 import { Badge } from "@/components/ui/badge";
 import { pickName, pickTypeLabel } from "@/constants";
+import { AdPlaceholder } from "@/components/AdPlaceholder";
 import { FavoriteButton } from "@/components/FavoriteButton";
 import { ReportDialog } from "@/components/ReportDialog";
 import { AdminQuickActions } from "@/components/AdminQuickActions";
@@ -52,9 +53,7 @@ export function AdCard({ ad }: { ad: AdRow }) {
             className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
         ) : (
-          <div className="grid h-full w-full place-items-center bg-hero-gradient font-display text-3xl font-black text-primary-foreground/70">
-            سكنة وحانوت
-          </div>
+          <AdPlaceholder ad={ad} className="h-full w-full" />
         )}
         <div className="absolute top-2 flex gap-1.5 ltr:left-2 rtl:right-2">
           <Badge

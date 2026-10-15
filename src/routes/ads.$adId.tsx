@@ -20,6 +20,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
+import { AdPlaceholder } from "@/components/AdPlaceholder";
 import { FavoriteButton } from "@/components/FavoriteButton";
 import { ReportDialog } from "@/components/ReportDialog";
 import { BlockGate, BlockUserButton } from "@/components/BlockUserButton";
@@ -148,9 +149,11 @@ function AdDetail() {
                   </div>
                 ))
               ) : (
-                <div className="grid aspect-[16/10] w-full place-items-center bg-hero-gradient font-display text-4xl font-black text-primary-foreground/70">
-                  سكنة وحانوت
-                </div>
+                <AdPlaceholder
+                  ad={data}
+                  className="aspect-[16/10] w-full"
+                  textClassName="text-lg sm:text-xl"
+                />
               )}
             </div>
 

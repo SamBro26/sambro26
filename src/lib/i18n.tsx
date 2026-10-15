@@ -45,6 +45,11 @@ const DICT = {
     myAds: "إعلاناتي",
     agency: "وكالة",
     dzd: "دج",
+    lookingFor: "يبحث عن",
+    inPlace: "في",
+    forSale: "للبيع",
+    forRent: "للكراء",
+    forPurchase: "لشراء",
   },
   fr: {
     appName: "سكنة وحانوت",
@@ -89,6 +94,11 @@ const DICT = {
     myAds: "Mes annonces",
     agency: "Agence",
     dzd: "DA",
+    lookingFor: "Recherche",
+    inPlace: "à",
+    forSale: "à vendre",
+    forRent: "à louer",
+    forPurchase: "à acheter",
   },
 } as const;
 
