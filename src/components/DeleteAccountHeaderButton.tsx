@@ -66,7 +66,7 @@ function DeleteAccountHeaderButtonInner() {
         onClick={() => setOpen(true)}
       >
         <Trash2 className="h-3.5 w-3.5 shrink-0" />
-        <span className="hidden xs:inline sm:inline">
+        <span className="hidden sm:inline">
           {lang === "ar" ? "حذف الحساب" : "Supprimer le compte"}
         </span>
       </Button>
