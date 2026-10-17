@@ -2,7 +2,7 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Home, MessageSquare, Plus, PlusCircle, UserRound, Languages, ShieldCheck } from "lucide-react";
 import { useEffect, type ReactNode } from "react";
-import { DeleteAccountHeaderButton } from "@/components/DeleteAccountHeaderButton";
+import { DeleteAccountHeaderButton, isProfilePage } from "@/components/DeleteAccountHeaderButton";
 import { useAdMobBanner } from "@/hooks/useAdMobBanner";
 import { useAuth } from "@/hooks/useAuth";
 import { checkIsAdmin } from "@/lib/admin";
@@ -112,17 +112,24 @@ export function AppShell({ children }: { children: ReactNode }) {
         style={{ top: bannerHeight }}
       >
         <div className="mx-auto grid w-full max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 sm:flex sm:justify-between">
-          <Link to="/" className="flex min-w-0 items-center gap-2">
-            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-premium-gradient font-display text-lg font-black text-accent-foreground">
-              س
-            </span>
-            <span className="min-w-0">
-              <span className="block truncate font-display text-lg leading-tight font-extrabold">
-                سكنة وحانوت
+          {user && isProfilePage(pathname) ? (
+            // On حسابي the logo's slot is handed to the red "حذف الحساب" trigger.
+            <div className="flex min-w-0 items-center">
+              <DeleteAccountHeaderButton variant="brand" />
+            </div>
+          ) : (
+            <Link to="/" className="flex min-w-0 items-center gap-2">
+              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-premium-gradient font-display text-lg font-black text-accent-foreground">
+                س
               </span>
-              <span className="block truncate text-xs opacity-80">Sakna wa Hanout</span>
-            </span>
-          </Link>
+              <span className="min-w-0">
+                <span className="block truncate font-display text-lg leading-tight font-extrabold">
+                  سكنة وحانوت
+                </span>
+                <span className="block truncate text-xs opacity-80">Sakna wa Hanout</span>
+              </span>
+            </Link>
+          )}
 
           <nav className="flex items-center gap-1">
             <div className="hidden items-center gap-1 md:flex">
@@ -163,8 +170,6 @@ export function AppShell({ children }: { children: ReactNode }) {
                 <Link to="/auth">{t("signIn")}</Link>
               </Button>
             )}
-            {/* Red "حذف الحساب" — self-hides outside the حسابي page */}
-            <DeleteAccountHeaderButton />
           </nav>
         </div>
       </header>
