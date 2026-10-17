@@ -1,7 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
-import { deleteMyAccount } from "@/lib/account.functions";
 import { useEffect, useMemo, useState } from "react";
 import { Pencil, Trash2, Eye, MapPin, ShieldCheck, ImagePlus, X } from "lucide-react";
 import {
@@ -177,72 +175,14 @@ function ProfilePage() {
     }
   }
 
-  const [deleteAccountOpen, setDeleteAccountOpen] = useState(false);
-  const [deletingAccount, setDeletingAccount] = useState(false);
-  const deleteMyAccountFn = useServerFn(deleteMyAccount);
-
-  async function confirmDeleteAccount() {
-    setDeletingAccount(true);
-    try {
-      await deleteMyAccountFn();
-      toast.success(lang === "ar" ? "تم حذف حسابك نهائياً" : "Compte supprimé définitivement");
-      await supabase.auth.signOut().catch(() => undefined);
-      queryClient.clear();
-      setDeleteAccountOpen(false);
-      void navigate({ to: "/auth", replace: true });
-    } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Error");
-    } finally {
-      setDeletingAccount(false);
-    }
-  }
 
   return (
     <AppShell>
-      <AlertDialog open={deleteAccountOpen} onOpenChange={(o) => !deletingAccount && setDeleteAccountOpen(o)}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle className="font-display text-destructive">
-              {lang === "ar" ? "حذف الحساب" : "Supprimer le compte"}
-            </AlertDialogTitle>
-            <AlertDialogDescription className="text-base font-bold leading-relaxed text-foreground">
-              {lang === "ar"
-                ? "تنبيه هام: حذف الحساب سيكون نهائياً تماماً! ستفقد جميع منشوراتك، رسائلك، وأنشطتك داخل التطبيق ولا يمكن استرجاعها بأي شكل من الأشكال."
-                : "Attention : la suppression du compte est définitive ! Vous perdrez toutes vos annonces, messages et activités, sans aucune possibilité de récupération."}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <div className="grid grid-cols-2 gap-3">
-            <Button
-              variant="destructive"
-              disabled={deletingAccount}
-              onClick={() => void confirmDeleteAccount()}
-            >
-              {lang === "ar" ? "تأكيد" : "Confirmer"}
-            </Button>
-            <Button
-              variant="outline"
-              disabled={deletingAccount}
-              onClick={() => setDeleteAccountOpen(false)}
-            >
-              {lang === "ar" ? "تراجع" : "Annuler"}
-            </Button>
-          </div>
-        </AlertDialogContent>
-      </AlertDialog>
       <section className="mb-5 overflow-hidden rounded-3xl bg-hero-gradient px-5 py-6 text-primary-foreground shadow-float">
         <div className="flex items-start justify-between gap-3">
           <h1 className="font-display text-2xl font-black">
             {profile?.full_name || (lang === "ar" ? "حسابي" : "Mon compte")}
           </h1>
-          <Button
-            size="sm"
-            variant="destructive"
-            className="shrink-0 gap-1.5 font-bold shadow-card"
-            onClick={() => setDeleteAccountOpen(true)}
-          >
-            <Trash2 className="h-4 w-4" />
-            {lang === "ar" ? "حذف الحساب" : "Supprimer le compte"}
-          </Button>
         </div>
         <p className="mt-1 text-sm opacity-90">{profile?.email ?? user?.email}</p>
         <div className="mt-3 flex flex-wrap items-center gap-2">
