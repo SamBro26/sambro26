@@ -2,6 +2,7 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Home, MessageSquare, Plus, PlusCircle, UserRound, Languages, ShieldCheck } from "lucide-react";
 import { useEffect, type ReactNode } from "react";
+import { DeleteAccountHeaderButton } from "@/components/DeleteAccountHeaderButton";
 import { useAdMobBanner } from "@/hooks/useAdMobBanner";
 import { useAuth } from "@/hooks/useAuth";
 import { checkIsAdmin } from "@/lib/admin";
