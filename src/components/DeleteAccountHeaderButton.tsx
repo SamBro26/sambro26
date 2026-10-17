@@ -17,22 +17,27 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
-/**
- * Red "حذف الحساب" trigger that lives in the green AppShell header.
- * Renders only on the /profile (حسابي) page so it never disturbs other screens.
- */
-export function DeleteAccountHeaderButton() {
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const { user } = useAuth();
-  const { lang } = useLang();
-
-  // Conditional display: only while actively viewing the My Profile page.
-  if (pathname !== "/profile" || !user) return null;
-
-  return <DeleteAccountHeaderButtonInner />;
+/** True only while actively viewing the حسابي (My Profile) page. */
+export function isProfilePage(pathname: string) {
+  return pathname === "/profile";
 }
 
-function DeleteAccountHeaderButtonInner() {
+/**
+ * Red "حذف الحساب" trigger that lives in the green AppShell header.
+ * "brand" variant sits where the logo normally is (right/center-right in RTL);
+ * "nav" variant is the compact pill used inside the action cluster.
+ * Both self-hide outside the حسابي page so other screens are untouched.
+ */
+export function DeleteAccountHeaderButton({ variant = "nav" }: { variant?: "brand" | "nav" }) {
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const { user } = useAuth();
+
+  if (!user || !isProfilePage(pathname)) return null;
+
+  return <DeleteAccountHeaderButtonInner variant={variant} />;
+}
+
+function DeleteAccountHeaderButtonInner({ variant }: { variant: "brand" | "nav" }) {
   const { lang } = useLang();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
