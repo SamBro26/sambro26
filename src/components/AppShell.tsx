@@ -163,6 +163,8 @@ export function AppShell({ children }: { children: ReactNode }) {
                 <Link to="/auth">{t("signIn")}</Link>
               </Button>
             )}
+            {/* Red "حذف الحساب" — self-hides outside the حسابي page */}
+            <DeleteAccountHeaderButton />
           </nav>
         </div>
       </header>
