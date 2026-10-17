@@ -9,6 +9,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useLang } from "@/lib/i18n";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -67,11 +68,14 @@ function DeleteAccountHeaderButtonInner({ variant }: { variant: "brand" | "nav" 
       <Button
         size="sm"
         variant="destructive"
-        className="h-8 shrink-0 gap-1 px-2.5 text-xs font-bold shadow-card"
+        className={cn(
+          "shrink-0 gap-2 font-bold shadow-card",
+          variant === "brand" ? "h-10 px-4 font-display text-base" : "h-8 px-2.5 text-xs",
+        )}
         onClick={() => setOpen(true)}
       >
-        <Trash2 className="h-3.5 w-3.5 shrink-0" />
-        <span className="hidden sm:inline">
+        <Trash2 className={variant === "brand" ? "h-4 w-4 shrink-0" : "h-3.5 w-3.5 shrink-0"} />
+        <span className={variant === "brand" ? undefined : "hidden sm:inline"}>
           {lang === "ar" ? "حذف الحساب" : "Supprimer le compte"}
         </span>
       </Button>
