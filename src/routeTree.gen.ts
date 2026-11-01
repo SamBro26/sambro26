@@ -17,6 +17,7 @@ import { Route as PostRouteImport } from './routes/post'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as AdsAdIdRouteImport } from './routes/ads.$adId'
+import { Route as ApiMigrateHelperRouteImport } from './routes/api/migrate-helper'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -58,6 +59,11 @@ const AdsAdIdRoute = AdsAdIdRouteImport.update({
   path: '/ads/$adId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiMigrateHelperRoute = ApiMigrateHelperRouteImport.update({
+  id: '/api/migrate-helper',
+  path: '/api/migrate-helper',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -68,6 +74,7 @@ export interface FileRoutesByFullPath {
   '/profile': typeof ProfileRoute
   '/reset-password': typeof ResetPasswordRoute
   '/ads/$adId': typeof AdsAdIdRoute
+  '/api/migrate-helper': typeof ApiMigrateHelperRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -78,6 +85,7 @@ export interface FileRoutesByTo {
   '/profile': typeof ProfileRoute
   '/reset-password': typeof ResetPasswordRoute
   '/ads/$adId': typeof AdsAdIdRoute
+  '/api/migrate-helper': typeof ApiMigrateHelperRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -89,6 +97,7 @@ export interface FileRoutesById {
   '/profile': typeof ProfileRoute
   '/reset-password': typeof ResetPasswordRoute
   '/ads/$adId': typeof AdsAdIdRoute
+  '/api/migrate-helper': typeof ApiMigrateHelperRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -101,6 +110,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/reset-password'
     | '/ads/$adId'
+    | '/api/migrate-helper'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -111,6 +121,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/reset-password'
     | '/ads/$adId'
+    | '/api/migrate-helper'
   id:
     | '__root__'
     | '/'
@@ -121,6 +132,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/reset-password'
     | '/ads/$adId'
+    | '/api/migrate-helper'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -132,6 +144,7 @@ export interface RootRouteChildren {
   ProfileRoute: typeof ProfileRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   AdsAdIdRoute: typeof AdsAdIdRoute
+  ApiMigrateHelperRoute: typeof ApiMigrateHelperRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -192,6 +205,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdsAdIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/migrate-helper': {
+      id: '/api/migrate-helper'
+      path: '/api/migrate-helper'
+      fullPath: '/api/migrate-helper'
+      preLoaderRoute: typeof ApiMigrateHelperRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -204,6 +224,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProfileRoute: ProfileRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   AdsAdIdRoute: AdsAdIdRoute,
+  ApiMigrateHelperRoute: ApiMigrateHelperRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
