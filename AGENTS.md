@@ -8,3 +8,5 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Active conversations use AppShell's chatView mode sized to the visual viewport, with a separately scrolling history and a non-shrinking composer; this keeps mobile keyboards from covering message entry without changing other pages.

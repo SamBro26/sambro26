@@ -1,7 +1,7 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Home, MessageSquare, Plus, PlusCircle, UserRound, Languages, ShieldCheck } from "lucide-react";
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useRef, type ReactNode } from "react";
 import { DeleteAccountHeaderButton, isProfilePage } from "@/components/DeleteAccountHeaderButton";
 import { useAdMobBanner } from "@/hooks/useAdMobBanner";
 import { useAuth } from "@/hooks/useAuth";
@@ -36,11 +36,34 @@ function LangToggle() {
   );
 }
 
-export function AppShell({ children }: { children: ReactNode }) {
+export function AppShell({ children, chatView = false }: { children: ReactNode; chatView?: boolean }) {
+  const shellRef = useRef<HTMLDivElement>(null);
   const bannerHeight = useAdMobBanner();
   const { t, dir, lang } = useLang();
   const { user, signOut } = useAuth();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
+
+  // Some mobile browsers resize only the visual viewport when the keyboard opens.
+  // Keep the entire chat inside that visible region, not the covered layout viewport.
+  useEffect(() => {
+    if (!chatView) return;
+    const viewport = window.visualViewport;
+    const resize = () => {
+      const shell = shellRef.current;
+      if (!shell) return;
+      shell.style.height = `${viewport?.height ?? window.innerHeight}px`;
+      shell.style.top = `${viewport?.offsetTop ?? 0}px`;
+    };
+    resize();
+    viewport?.addEventListener("resize", resize);
+    viewport?.addEventListener("scroll", resize);
+    window.addEventListener("resize", resize);
+    return () => {
+      viewport?.removeEventListener("resize", resize);
+      viewport?.removeEventListener("scroll", resize);
+      window.removeEventListener("resize", resize);
+    };
+  }, [chatView]);
 
   const admin = useQuery({
     queryKey: ["is-admin", user?.id],
@@ -103,13 +126,14 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   return (
     <div
+      ref={shellRef}
       dir={dir}
-      className="flex min-h-screen flex-col bg-background"
+      className={cn("flex flex-col bg-background", chatView ? "fixed inset-x-0 top-0 h-[100dvh] min-h-0 overflow-hidden" : "min-h-screen")}
       style={bannerHeight ? { paddingTop: bannerHeight } : undefined}
     >
       <header
-        className="sticky z-40 bg-hero-gradient text-primary-foreground shadow-float"
-        style={{ top: bannerHeight }}
+        className="sticky z-40 shrink-0 bg-hero-gradient text-primary-foreground shadow-float"
+        style={{ top: chatView ? 0 : bannerHeight }}
       >
         <div className="mx-auto grid w-full max-w-6xl grid-cols-[minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 sm:flex sm:justify-between">
           {user && isProfilePage(pathname) ? (
@@ -174,9 +198,9 @@ export function AppShell({ children }: { children: ReactNode }) {
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-6xl flex-1 px-4 pt-4 pb-24 md:pb-10">{children}</main>
+      <main className={cn("mx-auto w-full max-w-6xl flex-1 px-4 pt-4", chatView ? "flex min-h-0 flex-col overflow-hidden pb-0 md:pb-4" : "pb-24 md:pb-10")}>{children}</main>
 
-      <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card/95 shadow-bar backdrop-blur md:hidden">
+      <nav className={cn("fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card/95 shadow-bar backdrop-blur md:hidden", chatView && "hidden")}>
         <div className="mx-auto flex h-14 w-full max-w-6xl items-center gap-2 px-2">
           {/* Prominent "post your ad" pill — leads visually in RTL, mirrored in LTR */}
           <Link

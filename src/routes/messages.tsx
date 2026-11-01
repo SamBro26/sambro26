@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { Send } from "lucide-react";
+import { ArrowRight, Send } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
 import { AppShell } from "@/components/AppShell";
@@ -30,6 +30,8 @@ export const Route = createFileRoute("/messages")({
       },
       { property: "og:title", content: "Messages — سكنة وحانوت" },
       { property: "og:description", content: "Vos conversations سكنة وحانوت." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: MessagesPage,
@@ -42,19 +44,28 @@ function MessagesPage() {
   const search = Route.useSearch();
   const queryClient = useQueryClient();
   const [draft, setDraft] = useState("");
-  const bottomRef = useRef<HTMLDivElement>(null);
+  const historyRef = useRef<HTMLDivElement>(null);
+
+  function scrollToLatest() {
+    const history = historyRef.current;
+    if (!history) return;
+    history.scrollTo({
+      top: history.scrollHeight,
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",
+    });
+  }
 
   const activeId = search.c ?? null;
 
   const conversations = useQuery({
     queryKey: ["conversations", user?.id],
-    queryFn: () => listConversations(user!.id),
+    queryFn: () => user ? listConversations(user.id) : Promise.resolve([]),
     enabled: !!user,
   });
 
   const messages = useQuery({
     queryKey: ["messages", activeId],
-    queryFn: () => listMessages(activeId!),
+    queryFn: () => activeId ? listMessages(activeId) : Promise.resolve([]),
     enabled: !!activeId,
   });
 
@@ -81,8 +92,17 @@ function MessagesPage() {
   }, [activeId, queryClient]);
 
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages.data?.length]);
+    scrollToLatest();
+  }, [activeId, messages.data?.length]);
+
+  useEffect(() => {
+    const history = historyRef.current;
+    if (!activeId || !history) return;
+    // Keyboard animation shrinks this region; follow the latest message throughout.
+    const observer = new ResizeObserver(scrollToLatest);
+    observer.observe(history);
+    return () => observer.disconnect();
+  }, [activeId, loading]);
 
   // Mark incoming messages as read when the conversation is open.
   useEffect(() => {
@@ -127,14 +147,14 @@ function MessagesPage() {
     ?.participants?.find((p) => p.user_id !== user?.id);
 
   return (
-    <AppShell>
-      <h1 className="pb-4 font-display text-2xl font-black">{t("messages")}</h1>
+    <AppShell chatView={!!activeId}>
+      <h1 className="shrink-0 pb-4 font-display text-2xl font-black">{t("messages")}</h1>
 
-      <NotificationsPanel />
+      {!activeId && <NotificationsPanel />}
 
 
-      <div className="grid gap-4 md:grid-cols-[minmax(0,320px)_minmax(0,1fr)]">
-        <Card className={cn("overflow-hidden p-0 shadow-card", activeId && "hidden md:block")}>
+      <div className={cn("grid gap-4 md:grid-cols-[minmax(0,320px)_minmax(0,1fr)]", activeId && "min-h-0 flex-1 overflow-hidden pb-0")}>
+        <Card className={cn("overflow-y-auto p-0 shadow-card", activeId && "hidden min-h-0 md:block")}>
           {conversations.isLoading ? (
             <div className="space-y-2 p-3">
               {Array.from({ length: 4 }).map((_, i) => (
@@ -146,18 +166,20 @@ function MessagesPage() {
           ) : (
             <ul className="divide-y divide-border">
               {list.map((conv) => {
-                const other = conv!.participants?.find((p) => p.user_id !== user?.id);
-                const last = [...(conv!.messages ?? [])].sort((a, b) =>
+                if (!conv) return null;
+                const other = conv.participants?.find((p) => p.user_id !== user?.id);
+                const last = [...(conv.messages ?? [])].sort((a, b) =>
                   a.created_at.localeCompare(b.created_at),
-                )[conv!.messages.length - 1];
+                ).at(-1);
                 return (
-                  <li key={conv!.id}>
-                    <button
+                  <li key={conv.id}>
+                    <Button
                       type="button"
-                      onClick={() => void navigate({ to: "/messages", search: { c: conv!.id } })}
+                      variant="ghost"
+                      onClick={() => void navigate({ to: "/messages", search: { c: conv.id } })}
                       className={cn(
-                        "flex w-full items-center gap-3 p-3 text-start transition-colors hover:bg-muted",
-                        activeId === conv!.id && "bg-muted",
+                        "flex h-auto w-full items-center justify-start gap-3 rounded-none p-3 text-start transition-colors hover:bg-muted",
+                        activeId === conv.id && "bg-muted",
                       )}
                     >
                       <span className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-hero-gradient font-bold text-primary-foreground">
@@ -171,7 +193,7 @@ function MessagesPage() {
                           {last?.content ?? ""}
                         </span>
                       </span>
-                    </button>
+                    </Button>
                   </li>
                 );
               })}
@@ -179,25 +201,28 @@ function MessagesPage() {
           )}
         </Card>
 
-        <Card className="flex min-h-[60vh] flex-col overflow-hidden p-0 shadow-card">
+        <Card className={cn("flex gap-0 flex-col overflow-hidden p-0 shadow-card", activeId ? "h-full min-h-0" : "min-h-[60vh]")}>
           {!activeId ? (
             <p className="m-auto p-8 text-center text-sm text-muted-foreground">
               {t("conversations")}
             </p>
           ) : (
             <>
-              {activeOther && (
-                <div className="flex items-center justify-between gap-2 border-b border-border px-4 py-2">
-                  <span className="truncate text-sm font-semibold">{activeOther.profile?.full_name || "—"}</span>
-                  <BlockUserButton otherId={activeOther.user_id} />
+                <div className="grid shrink-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-2 border-b border-border px-4 py-2">
+                  <div className="flex min-w-0 items-center gap-2">
+                    <Button variant="ghost" size="icon" className="shrink-0 md:hidden" aria-label={t("conversations")} onClick={() => void navigate({ to: "/messages", search: {} })}>
+                      <ArrowRight className={cn("h-4 w-4", lang !== "ar" && "rotate-180")} />
+                    </Button>
+                    <span className="min-w-0 truncate text-sm font-semibold">{activeOther?.profile?.full_name || "—"}</span>
+                  </div>
+                  {activeOther && <BlockUserButton otherId={activeOther.user_id} />}
                 </div>
-              )}
-              <div className="flex-1 space-y-2 overflow-y-auto p-4">
+              <div ref={historyRef} className="min-h-0 flex-1 space-y-2 overflow-y-auto overscroll-contain p-4">
                 {(messages.data ?? []).map((m) => (
                   <div
                     key={m.id}
                     className={cn(
-                      "max-w-[75%] rounded-2xl px-3.5 py-2 text-sm",
+                      "w-fit max-w-[85%] whitespace-pre-wrap break-words rounded-2xl px-3.5 py-2 text-sm [overflow-wrap:anywhere] sm:max-w-[75%]",
                       m.sender_id === user?.id
                         ? "ms-auto bg-primary text-primary-foreground"
                         : "me-auto bg-muted text-foreground",
@@ -206,18 +231,19 @@ function MessagesPage() {
                     {m.content}
                   </div>
                 ))}
-                <div ref={bottomRef} />
               </div>
-              <div className="border-t border-border p-3">
+              <div className="shrink-0 border-t border-border bg-card p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
                 <BlockGate otherId={activeOther?.user_id}>
-                  <form onSubmit={submit} className="flex items-center gap-2">
+                  <form onSubmit={submit} className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-2">
                     <Input
+                      className="min-w-0 text-base md:text-sm"
                       value={draft}
+                      onFocus={scrollToLatest}
                       onChange={(e) => setDraft(e.target.value)}
                       placeholder={t("typeMessage")}
                       maxLength={1000}
                     />
-                    <Button type="submit" size="icon" aria-label={t("send")}>
+                    <Button type="submit" size="icon" className="shrink-0" aria-label={t("send")}>
                       <Send className="h-4 w-4" />
                     </Button>
                   </form>
